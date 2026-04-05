@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Astemes — Test & Measurement Solutions</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #212121;
@@ -59,14 +59,23 @@
   }
 
   .nav-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1.35rem;
-    letter-spacing: -0.02em;
-    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
     text-decoration: none;
   }
-  .nav-logo span { color: var(--accent); }
+  .nav-logo img {
+    height: 32px;
+    width: auto;
+  }
+  .nav-logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    letter-spacing: 0.08em;
+    color: var(--text);
+    text-transform: uppercase;
+  }
 
   .nav-links {
     display: flex;
@@ -508,13 +517,23 @@
     justify-content: space-between;
   }
   .footer-logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1rem;
-    color: var(--muted);
-    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
-  .footer-logo span { color: var(--accent); }
+  .footer-logo img {
+    height: 24px;
+    width: auto;
+    opacity: 0.6;
+  }
+  .footer-logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
   .footer-copy {
     font-family: 'DM Mono', monospace;
     font-size: 0.68rem;
@@ -550,7 +569,10 @@
 
 <!-- NAV -->
 <nav>
-  <a href="#" class="nav-logo">Aste<span>.</span>mes</a>
+  <a href="#" class="nav-logo">
+    <img src="brand_assets/Logo/Logo_alphasigma_white.png" alt="Astemes">
+    <span class="nav-logo-text">Astemes</span>
+  </a>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
     <li><a href="#process">Process</a></li>
@@ -769,7 +791,10 @@
 
 <!-- FOOTER -->
 <footer>
-  <div class="footer-logo">Aste<span>.</span>mes</div>
+  <div class="footer-logo">
+    <img src="brand_assets/Logo/Logo_alphasigma_white.png" alt="Astemes">
+    <span class="footer-logo-text">Astemes</span>
+  </div>
   <div class="footer-copy">© 2025 Astemes — Pietarsaari, Finland</div>
 </footer>
 
