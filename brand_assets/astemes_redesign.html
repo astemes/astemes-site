@@ -8,14 +8,14 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0c10;
-    --surface: #111318;
-    --border: #1e2330;
-    --accent: #00e5a0;
-    --accent2: #0077ff;
-    --text: #e8ecf4;
-    --muted: #6b7590;
-    --grid: rgba(255,255,255,0.025);
+    --bg: #212121;
+    --surface: #2b3640;
+    --border: #455A64;
+    --accent: #607D8B;
+    --accent2: #CFD8DC;
+    --text: #FFFFFF;
+    --muted: #9E9E9E;
+    --grid: rgba(96,125,139,0.06);
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -53,7 +53,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 1.25rem 4rem;
-    background: rgba(10,12,16,0.85);
+    background: rgba(33,33,33,0.85);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
   }
@@ -90,7 +90,7 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
     background: var(--accent);
-    color: #000;
+    color: #FFFFFF;
     border: none;
     padding: 0.6rem 1.4rem;
     cursor: pointer;
@@ -114,14 +114,14 @@
   .hero-glow {
     position: absolute;
     width: 600px; height: 600px;
-    background: radial-gradient(circle, rgba(0,229,160,0.08) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(96,125,139,0.12) 0%, transparent 70%);
     top: 10%; left: 55%;
     pointer-events: none;
   }
   .hero-glow2 {
     position: absolute;
     width: 400px; height: 400px;
-    background: radial-gradient(circle, rgba(0,119,255,0.06) 0%, transparent 70%);
+    background: radial-gradient(circle, rgba(207,216,220,0.06) 0%, transparent 70%);
     bottom: 10%; left: 30%;
     pointer-events: none;
   }
@@ -181,7 +181,7 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     background: var(--accent);
-    color: #000;
+    color: #FFFFFF;
     border: none;
     padding: 0.9rem 2rem;
     cursor: pointer;
@@ -327,7 +327,7 @@
     transform-origin: left;
     transition: transform 0.4s;
   }
-  .service-card:hover { background: #161a24; }
+  .service-card:hover { background: #344550; }
   .service-card:hover::before { transform: scaleX(1); }
 
   .service-num {
@@ -434,7 +434,7 @@
     text-align: center;
     transition: background 0.2s;
   }
-  .tech-badge:hover { background: #161a24; }
+  .tech-badge:hover { background: #344550; }
   .tech-badge-name {
     font-family: 'DM Mono', monospace;
     font-size: 0.78rem;
