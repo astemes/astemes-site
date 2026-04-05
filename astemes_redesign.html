@@ -506,6 +506,47 @@
   }
   .contact-item-value a:hover { color: var(--accent); }
 
+  /* ── ABOUT ── */
+  #about {
+    border-top: 1px solid var(--border);
+  }
+
+  .about-content {
+    max-width: 720px;
+  }
+
+  .about-text {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-values {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+
+  .about-value {
+    flex: 1;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .about-value-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .about-value-text {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
   /* ── FOOTER ── */
   footer {
     position: relative;
@@ -562,6 +603,7 @@
     .services-grid { grid-template-columns: 1fr; }
     .process-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
     footer { flex-direction: column; gap: 1rem; padding: 2rem; }
+    .about-values { flex-direction: column; gap: 1.5rem; }
   }
 </style>
 </head>
@@ -801,6 +843,36 @@
             <textarea placeholder="How can we help?" rows="4" style="background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; padding: 0.9rem 1rem; outline: none; resize: vertical; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
             <button class="btn-primary" style="align-self: flex-start;">Send message →</button>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-tag">About</div>
+    <h2 class="section-title fade-in">Who we are</h2>
+    <div class="about-content">
+      <p class="about-text">
+        Astemes provides expertise in the design and development of automated test and measurement systems. Our mission is to enable innovation and excellence by providing world class technical expertise. We value software craftmanship and continuously work to improve and widen our offerings by actively participating in the international community.
+      </p>
+      <p class="about-text">
+        We value transparency and always deliver to the best of our ability. While we do want our customers to come back, we have no intention to lock anyone in. Source code and documentation is, for this reason, always provided as part of our deliveries.
+      </p>
+      <div class="about-values">
+        <div class="about-value fade-in">
+          <div class="about-value-title">Craftsmanship</div>
+          <p class="about-value-text">Quality software built on proven frameworks, know-how, and industry best practices.</p>
+        </div>
+        <div class="about-value fade-in">
+          <div class="about-value-title">Transparency</div>
+          <p class="about-value-text">Full source code and documentation delivered. No lock-in, no black boxes.</p>
+        </div>
+        <div class="about-value fade-in">
+          <div class="about-value-title">Community</div>
+          <p class="about-value-text">Active participation in the test and measurement community through open source and knowledge sharing.</p>
         </div>
       </div>
     </div>
