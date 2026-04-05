@@ -857,6 +857,10 @@
       <div class="tech-badge fade-in">
         <div class="tech-badge-name">C++</div>
         <div class="tech-badge-role">Embedded Systems</div>
+      </div>      
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">CI/CD</div>
+        <div class="tech-badge-role">Automated Test, Build &amp; Deploy pipelines</div>
       </div>
       <div class="tech-badge fade-in">
         <div class="tech-badge-name">DAQ</div>
@@ -873,10 +877,6 @@
       <div class="tech-badge fade-in">
         <div class="tech-badge-name">Instrument Integration</div>
         <div class="tech-badge-role">SCPI / VISA Protocols</div>
-      </div>
-      <div class="tech-badge fade-in">
-        <div class="tech-badge-name">CI/CD</div>
-        <div class="tech-badge-role">Automated Build &amp; Test Pipelines</div>
       </div>
     </div>
   </div>
@@ -914,12 +914,12 @@
       <div>
         <div style="background: var(--bg); border: 1px solid var(--border); padding: 2.5rem; margin-top: 3rem;">
           <div style="font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.5rem;">Send a message</div>
-          <div style="display: flex; flex-direction: column; gap: 1rem;">
-            <input type="text" placeholder="Your name" style="background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; padding: 0.9rem 1rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-            <input type="email" placeholder="Email address" style="background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; padding: 0.9rem 1rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
-            <textarea placeholder="How can we help?" rows="4" style="background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; padding: 0.9rem 1rem; outline: none; resize: vertical; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
-            <button class="btn-primary" style="align-self: flex-start;">Send message →</button>
-          </div>
+          <form id="contact-form" style="display: flex; flex-direction: column; gap: 1rem;" onsubmit="return openMailClient()">
+            <input id="contact-name" type="text" placeholder="Your name" style="background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 1rem; padding: 1.1rem 1.25rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+
+            <textarea id="contact-message" placeholder="How can we help?" rows="6" style="background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 1rem; padding: 1.1rem 1.25rem; outline: none; resize: vertical; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+            <button type="submit" class="btn-primary" style="align-self: flex-start;">Send message →</button>
+          </form>
         </div>
       </div>
     </div>
@@ -966,6 +966,21 @@
 </footer>
 
 <script>
+  // Contact form — opens email client with filled fields
+  function openMailClient() {
+    var name = document.getElementById('contact-name').value.trim();
+    var message = document.getElementById('contact-message').value.trim();
+
+    var subject = 'Inquiry from ' + (name || 'Website visitor');
+    var body = message + '\n\n— ' + name;
+
+    window.location.href = 'mailto:info@astemes.com'
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(body);
+
+    return false;
+  }
+
   // Scroll reveal
   const observer = new IntersectionObserver(entries => {
     entries.forEach((entry, i) => {
