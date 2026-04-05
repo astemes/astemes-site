@@ -364,6 +364,50 @@
     line-height: 1.75;
   }
 
+  /* ── SOLUTIONS ── */
+  #solutions {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .solutions-intro {
+    color: var(--muted);
+    max-width: 600px;
+    margin-bottom: 3rem;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .solution-card {
+    background: var(--surface);
+    padding: 2.5rem;
+    transition: background 0.3s;
+  }
+  .solution-card:hover { background: #344550; }
+
+  .solution-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .solution-desc {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
   /* ── HOW WE WORK ── */
   #process {
     background: var(--surface);
@@ -600,7 +644,7 @@
     .hero { padding: 8rem 2rem 14rem; }
     .hero-stats { right: 2rem; bottom: 2rem; flex-direction: row; gap: 2rem; }
     .section-inner { padding: 4rem 2rem; }
-    .services-grid { grid-template-columns: 1fr; }
+    .services-grid, .solutions-grid { grid-template-columns: 1fr; }
     .process-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
     footer { flex-direction: column; gap: 1rem; padding: 2rem; }
     .about-values { flex-direction: column; gap: 1.5rem; }
@@ -617,8 +661,10 @@
   </a>
   <ul class="nav-links">
     <li><a href="#services">Services</a></li>
+    <li><a href="#solutions">Solutions</a></li>
     <li><a href="#process">Process</a></li>
     <li><a href="#tech">Technologies</a></li>
+    <li><a href="#about">About</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
   <a href="#contact" class="nav-cta">Get in touch</a>
@@ -705,6 +751,33 @@
         <div class="service-icon">◎</div>
         <div class="service-title">Training &amp; Workshops</div>
         <p class="service-desc">Tailored training, presentations, and workshops on testing, process, and software engineering. Delivered on-site, remotely, or hybrid — as intensive bursts or a regular cadence. We also offer code reviews and pair programming.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section id="solutions">
+  <div class="section-inner">
+    <div class="section-tag">Solutions</div>
+    <h2 class="section-title fade-in">Systems we build</h2>
+    <p class="solutions-intro">An automated test system is software and hardware tightly integrated to make a set of measurements which are evaluated to provide a test result.</p>
+    <div class="solutions-grid">
+      <div class="solution-card fade-in">
+        <div class="solution-title">Development Test</div>
+        <p class="solution-desc">Flexible, user-configurable systems for product development. By automating repetitive tests, more time can be spent innovating.</p>
+      </div>
+      <div class="solution-card fade-in">
+        <div class="solution-title">Production Test</div>
+        <p class="solution-desc">Reliable and simple-to-operate systems for manufacturing quality assurance. Reduce time spent on testing while proving product quality through measurements.</p>
+      </div>
+      <div class="solution-card fade-in">
+        <div class="solution-title">Embedded Software Test</div>
+        <p class="solution-desc">Hardware-in-the-loop testing with real hardware and physical signals. Integrates with CI systems for automated regression testing.</p>
+      </div>
+      <div class="solution-card fade-in">
+        <div class="solution-title">Monitoring &amp; Life-Time Test</div>
+        <p class="solution-desc">Systems that gather operational data for predictive maintenance. Built to be reliable even when deployed in uncertain environments.</p>
       </div>
     </div>
   </div>
