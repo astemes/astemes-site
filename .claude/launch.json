@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "astemes-site",
-      "runtimeExecutable": "python3",
+      "runtimeExecutable": "/Users/antsundq/.local/bin/python3.14",
       "runtimeArgs": ["-m", "http.server", "3456"],
       "port": 3456
     }
