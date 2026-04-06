@@ -61,18 +61,18 @@
   .nav-logo {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.45rem;
     text-decoration: none;
   }
   .nav-logo img {
-    height: 24px;
+    height: 22px;
     width: auto;
   }
   .nav-logo-text {
     font-family: 'Space Grotesk', sans-serif;
     font-weight: 700;
-    font-size: 1.55rem;
-    letter-spacing: 0.14em;
+    font-size: 1.45rem;
+    letter-spacing: 0.04em;
     color: var(--text);
     text-transform: uppercase;
   }
@@ -243,38 +243,41 @@
     margin-top: 0.25rem;
   }
 
-  /* ── TICKER ── */
-  .ticker {
+  /* ── BADGE BAR ── */
+  .badge-bar {
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
     background: var(--surface);
-    overflow: hidden;
-    padding: 0.85rem 0;
+    padding: 2rem 4rem;
     position: relative;
     z-index: 1;
   }
-  .ticker-track {
+  .badge-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
     display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 3rem;
-    animation: ticker 24s linear infinite;
-    white-space: nowrap;
+    flex-wrap: wrap;
   }
-  .ticker-item {
-    font-family: 'DM Mono', monospace;
-    font-size: 0.72rem;
-    color: var(--muted);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
+  .badge-bar-item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    flex-shrink: 0;
   }
-  .ticker-dot { color: var(--accent); font-size: 1rem; }
-
-  @keyframes ticker {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
+  .badge-bar-item img {
+    height: 56px;
+    width: auto;
+  }
+  .badge-bar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    max-width: 120px;
+    line-height: 1.4;
   }
 
   /* ── SECTIONS ── */
@@ -645,6 +648,10 @@
     .hero-stats { right: 2rem; bottom: 2rem; flex-direction: row; gap: 2rem; }
     .section-inner { padding: 4rem 2rem; }
     .services-grid, .solutions-grid { grid-template-columns: 1fr; }
+    .tech-grid { grid-template-columns: repeat(2, 1fr); }
+    .tech-badge { padding: 0.9rem 0.6rem; }
+    .tech-badge-name { font-size: 0.7rem; }
+    .tech-badge-role { font-size: 0.6rem; }
     .process-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
     footer { flex-direction: column; gap: 1rem; padding: 2rem; }
     .about-values { flex-direction: column; gap: 1.5rem; }
@@ -678,7 +685,7 @@
     <div class="hero-label">Test &amp; Measurement Solutions</div>
     <h1>We automate<br>your <em>testing</em>.</h1>
     <p class="hero-body">
-      Your partner in test automation. We develop systems to automate testing of electro-mechanical products through the entire product life cycle — from early prototyping through production and beyond.
+      Your partner in test automation. We develop systems to automate testing of electro-mechanical products through the entire product life cycle, from early prototyping through production and beyond.
     </p>
     <div class="hero-actions">
       <a href="#services" class="btn-primary">Our services</a>
@@ -701,30 +708,25 @@
   </div>
 </section>
 
-<!-- TICKER -->
-<div class="ticker" aria-hidden="true">
-  <div class="ticker-track">
-    <span class="ticker-item"><span class="ticker-dot">◆</span> NI LabVIEW</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> NI TestStand</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Python</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> C++</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Test Automation</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Measurement Systems</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Product Validation</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Production Testing</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Turn-Key Solutions</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Electro-Mechanical Testing</span>
-    <!-- duplicate for seamless loop -->
-    <span class="ticker-item"><span class="ticker-dot">◆</span> NI LabVIEW</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> NI TestStand</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Python</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> C++</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Test Automation</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Measurement Systems</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Product Validation</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Production Testing</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Turn-Key Solutions</span>
-    <span class="ticker-item"><span class="ticker-dot">◆</span> Electro-Mechanical Testing</span>
+<!-- CERTIFICATIONS & PARTNERSHIPS -->
+<div class="badge-bar">
+  <div class="badge-bar-inner">
+    <div class="badge-bar-item">
+      <img src="brand_assets/Logo/3rd Party/NI_Partner_Badges_RGB_Consultant_Integration_Partner.png" alt="NI Integration Partner">
+      <span class="badge-bar-label">NI Integration Partner</span>
+    </div>
+    <div class="badge-bar-item">
+      <img src="brand_assets/Logo/3rd Party/CLA_2.png" alt="Certified LabVIEW Architect">
+      <span class="badge-bar-label">Certified LabVIEW Architect</span>
+    </div>
+    <div class="badge-bar-item">
+      <img src="brand_assets/Logo/3rd Party/CTD.png" alt="Certified TestStand Developer">
+      <span class="badge-bar-label">Certified TestStand Developer</span>
+    </div>
+    <div class="badge-bar-item">
+      <img src="brand_assets/Logo/3rd Party/LV_Champ_Logo.png" alt="LabVIEW Champion">
+      <span class="badge-bar-label">LabVIEW Champion</span>
+    </div>
   </div>
 </div>
 
@@ -863,12 +865,16 @@
         <div class="tech-badge-role">Automated Test, Build &amp; Deploy pipelines</div>
       </div>
       <div class="tech-badge fade-in">
-        <div class="tech-badge-name">DAQ</div>
-        <div class="tech-badge-role">Data Acquisition</div>
+        <div class="tech-badge-name">Data Acquisition</div>
+        <div class="tech-badge-role">DAQmx, cDAQ, PXI &amp; USB</div>
       </div>
       <div class="tech-badge fade-in">
         <div class="tech-badge-name">cRIO</div>
-        <div class="tech-badge-role">Real-Time Systems <br/>FPGA</div>
+        <div class="tech-badge-role">Real-Time<br/>FPGA</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">PXI</div>
+        <div class="tech-badge-role">Modular Instrumentation</div>
       </div>
       <div class="tech-badge fade-in">
         <div class="tech-badge-name">Serial Communication</div>
@@ -877,6 +883,10 @@
       <div class="tech-badge fade-in">
         <div class="tech-badge-name">Instrument Integration</div>
         <div class="tech-badge-role">SCPI / VISA Protocols</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">Git</div>
+        <div class="tech-badge-role">Version Control &amp; Collaboration</div>
       </div>
     </div>
   </div>
@@ -906,8 +916,8 @@
             <span class="contact-item-value">Pietarsaari, Finland</span>
           </div>
           <div class="contact-item">
-            <span class="contact-item-label">Website</span>
-            <span class="contact-item-value"><a href="https://astemes.com">astemes.com</a></span>
+            <span class="contact-item-label">GitHub</span>
+            <span class="contact-item-value"><a href="https://github.com/astemes">github.com/astemes</a></span>
           </div>
         </div>
       </div>
