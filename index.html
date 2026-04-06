@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astemes — Test & Measurement Solutions</title>
+<meta name="description" content="Astemes is a solutions provider for test and measurement applications. We develop systems to automate testing of electro-mechanical products through the entire product life cycle.">
+<meta name="keywords" content="test automation, measurement systems, LabVIEW, TestStand, NI, turn-key solutions, Pietarsaari, Finland">
+<meta property="og:title" content="Astemes — Test & Measurement Solutions">
+<meta property="og:description" content="Your partner in test automation. We develop systems to automate testing of electro-mechanical products through the entire product life cycle.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://astemes.com">
+<link rel="icon" href="brand_assets/Logo/Logo_alphasigma.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #212121;
+    --surface: #2b3640;
+    --border: #455A64;
+    --accent: #607D8B;
+    --accent2: #CFD8DC;
+    --text: #FFFFFF;
+    --muted: #9E9E9E;
+    --grid: rgba(96,125,139,0.06);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 4rem;
+    background: rgba(33,33,33,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    text-decoration: none;
+  }
+  .nav-logo img {
+    height: 22px;
+    width: auto;
+  }
+  .nav-logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.45rem;
+    letter-spacing: 0.04em;
+    color: var(--text);
+    text-transform: uppercase;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #FFFFFF;
+    border: none;
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 4rem 4rem;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(96,125,139,0.12) 0%, transparent 70%);
+    top: 10%; left: 55%;
+    pointer-events: none;
+  }
+  .hero-glow2 {
+    position: absolute;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, rgba(207,216,220,0.06) 0%, transparent 70%);
+    bottom: 10%; left: 30%;
+    pointer-events: none;
+  }
+
+  .hero-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .hero-label::before {
+    content: '';
+    display: inline-block;
+    width: 32px; height: 1px;
+    background: var(--accent);
+  }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    margin-bottom: 2rem;
+    max-width: 700px;
+  }
+
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero-body {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 520px;
+    margin-bottom: 3rem;
+    line-height: 1.8;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .btn-primary {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--accent);
+    color: #FFFFFF;
+    border: none;
+    padding: 0.9rem 2rem;
+    cursor: pointer;
+    text-decoration: none;
+    font-weight: 500;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+
+  .btn-ghost {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+    padding: 0.9rem 2rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .hero-stats {
+    position: absolute;
+    right: 4rem;
+    bottom: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .stat-item {
+    text-align: right;
+  }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 2.2rem;
+    color: var(--text);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 0.25rem;
+  }
+
+  /* ── BADGE BAR ── */
+  .badge-bar {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    padding: 2rem 4rem;
+    position: relative;
+    z-index: 1;
+  }
+  .badge-bar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3rem;
+    flex-wrap: wrap;
+  }
+  .badge-bar-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .badge-bar-item img {
+    height: 56px;
+    width: auto;
+  }
+  .badge-bar-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    max-width: 120px;
+    line-height: 1.4;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    position: relative;
+    z-index: 1;
+  }
+
+  .section-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem 4rem;
+  }
+
+  .section-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── SERVICES ── */
+  #services { background: transparent; }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 4rem;
+  }
+
+  .service-card {
+    background: var(--surface);
+    padding: 3rem 2.5rem;
+    transition: background 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .service-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .service-card:hover { background: #344550; }
+  .service-card:hover::before { transform: scaleX(1); }
+
+  .service-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    margin-bottom: 1.75rem;
+  }
+  .service-icon {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    line-height: 1;
+  }
+  .service-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  .service-desc {
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.75;
+  }
+
+  /* ── SOLUTIONS ── */
+  #solutions {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .solutions-intro {
+    color: var(--muted);
+    max-width: 600px;
+    margin-bottom: 3rem;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .solutions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .solution-card {
+    background: var(--surface);
+    padding: 2.5rem;
+    transition: background 0.3s;
+  }
+  .solution-card:hover { background: #344550; }
+
+  .solution-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.01em;
+  }
+
+  .solution-desc {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+
+  /* ── HOW WE WORK ── */
+  #process {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .process-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+    margin-top: 3rem;
+  }
+
+  .process-desc {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.9;
+  }
+
+  .steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+  .step {
+    display: flex;
+    gap: 1.5rem;
+    padding: 1.75rem 0;
+    border-bottom: 1px solid var(--border);
+    align-items: flex-start;
+  }
+  .step:first-child { border-top: 1px solid var(--border); }
+  .step-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    min-width: 2.5rem;
+    padding-top: 0.2rem;
+  }
+  .step-content {}
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+  }
+  .step-text {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── TECH ── */
+  #tech {}
+
+  .tech-intro {
+    color: var(--muted);
+    max-width: 600px;
+    margin-bottom: 3rem;
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .tech-badge {
+    background: var(--surface);
+    padding: 1.5rem;
+    text-align: center;
+    transition: background 0.2s;
+  }
+  .tech-badge:hover { background: #344550; }
+  .tech-badge-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    color: var(--text);
+  }
+  .tech-badge-role {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.3rem;
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .contact-desc {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.9;
+    margin-bottom: 2.5rem;
+  }
+
+  .contact-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .contact-item {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  .contact-item-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    min-width: 80px;
+    padding-top: 0.15rem;
+  }
+  .contact-item-value {
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+  .contact-item-value a {
+    color: var(--text);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .contact-item-value a:hover { color: var(--accent); }
+
+  /* ── ABOUT ── */
+  #about {
+    border-top: 1px solid var(--border);
+  }
+
+  .about-content {
+    max-width: 720px;
+  }
+
+  .about-text {
+    color: var(--muted);
+    font-size: 1rem;
+    line-height: 1.9;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-values {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2.5rem;
+  }
+
+  .about-value {
+    flex: 1;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .about-value-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 0.35rem;
+  }
+
+  .about-value-text {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 2rem 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .footer-logo img {
+    height: 24px;
+    width: auto;
+    opacity: 0.6;
+  }
+  .footer-logo-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .footer-copy {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+  }
+
+  /* ── ANIMATIONS ── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 1.25rem 2rem; }
+    .nav-links { display: none; }
+    .hero { padding: 8rem 2rem 14rem; }
+    .hero-stats { right: 2rem; bottom: 2rem; flex-direction: row; gap: 2rem; }
+    .section-inner { padding: 4rem 2rem; }
+    .services-grid, .solutions-grid { grid-template-columns: 1fr; }
+    .tech-grid { grid-template-columns: repeat(2, 1fr); }
+    .tech-badge { padding: 0.9rem 0.6rem; }
+    .tech-badge-name { font-size: 0.7rem; }
+    .tech-badge-role { font-size: 0.6rem; }
+    .process-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    footer { flex-direction: column; gap: 1rem; padding: 2rem; }
+    .about-values { flex-direction: column; gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="/" class="nav-logo">
+    <img src="brand_assets/Logo/Logo_alphasigma_white.png" alt="Astemes">
+    <span class="nav-logo-text">Astemes</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#solutions">Solutions</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#tech">Technologies</a></li>
+    <li><a href="#contact">Contact</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Get in touch</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div>
+    <div class="hero-label">Test &amp; Measurement Solutions</div>
+    <h1>We automate<br>your <em>testing</em>.</h1>
+    <p class="hero-body">
+      Your partner in test automation. We develop systems to automate testing of electro-mechanical products through the entire product life cycle, from early prototyping through production and beyond.
+    </p>
+    <div class="hero-actions">
+      <a href="#services" class="btn-primary">Our services</a>
+      <a href="#contact" class="btn-ghost">Contact us</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <div class="stat-num">FI</div>
+      <div class="stat-label">Based in Pietarsaari</div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS & PARTNERSHIPS -->
+<div class="badge-bar">
+  <div class="badge-bar-inner">
+    <div class="badge-bar-item">
+      <img src="brand_assets/Logo/3rd Party/NI_Partner_Badges_RGB_Consultant_Integration_Partner.png" alt="NI Integration Partner">
+      <span class="badge-bar-label">NI Integration Partner</span>
+    </div>
+    <div class="badge-bar-item">
+      <img src="brand_assets/Logo/3rd Party/CLA_2.png" alt="Certified LabVIEW Architect">
+      <span class="badge-bar-label">Certified LabVIEW Architect</span>
+    </div>
+    <div class="badge-bar-item">
+      <img src="brand_assets/Logo/3rd Party/CTD.png" alt="Certified TestStand Developer">
+      <span class="badge-bar-label">Certified TestStand Developer</span>
+    </div>
+    <div class="badge-bar-item">
+      <img src="brand_assets/Logo/3rd Party/LV_Champ_Logo.png" alt="LabVIEW Champion">
+      <span class="badge-bar-label">LabVIEW Champion</span>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-inner">
+    <div class="section-tag">What we do</div>
+    <h2 class="section-title fade-in">Three ways we<br>deliver value</h2>
+    <div class="services-grid">
+      <div class="service-card fade-in">
+        <div class="service-num">01 / 03</div>
+        <div class="service-icon">&lt;/&gt;</div>
+        <div class="service-title">Software Development</div>
+        <p class="service-desc">Industrial software for test and measurement applications. We work as part of your team or independently, continuously delivering and demonstrating business value. Communication is treated as seriously as engineering.</p>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-num">02 / 03</div>
+        <div class="service-icon">⚙</div>
+        <div class="service-title">Turn-Key Solutions</div>
+        <p class="service-desc">Early involvement during requirements and design leads to optimal outcomes. We lead the full project, bringing in the best partners and leading the design work, while keeping you informed and in control throughout.</p>
+      </div>
+      <div class="service-card fade-in">
+        <div class="service-num">03 / 03</div>
+        <div class="service-icon">◎</div>
+        <div class="service-title">Training &amp; Workshops</div>
+        <p class="service-desc">Tailored training, presentations, and workshops on testing, process, and software engineering. Delivered on-site, remotely, or hybrid — as intensive bursts or a regular cadence. We also offer code reviews and pair programming.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUTIONS -->
+<section id="solutions">
+  <div class="section-inner">
+    <div class="section-tag">Solutions</div>
+    <h2 class="section-title fade-in">Systems we build</h2>
+    <p class="solutions-intro">An automated test system is software and hardware tightly integrated to make a set of measurements which are evaluated to provide a test result.</p>
+    <div class="solutions-grid">
+      <div class="solution-card fade-in">
+        <div class="solution-title">Development Test</div>
+        <p class="solution-desc">Flexible, user-configurable systems for product development. By automating repetitive tests, more time can be spent innovating.</p>
+      </div>
+      <div class="solution-card fade-in">
+        <div class="solution-title">Production Test</div>
+        <p class="solution-desc">Reliable and simple-to-operate systems for manufacturing quality assurance. Reduce time spent on testing while proving product quality through measurements.</p>
+      </div>
+      <div class="solution-card fade-in">
+        <div class="solution-title">Embedded Software Test</div>
+        <p class="solution-desc">Hardware-in-the-loop testing with real hardware and physical signals. Integrates with CI systems for automated regression testing.</p>
+      </div>
+      <div class="solution-card fade-in">
+        <div class="solution-title">Monitoring &amp; Life-Time Test</div>
+        <p class="solution-desc">Systems that gather operational data for predictive maintenance. Built to be reliable even when deployed in uncertain environments.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE WORK -->
+<section id="process">
+  <div class="section-inner">
+    <div class="section-tag">How we work</div>
+    <h2 class="section-title fade-in">A clear process,<br>transparent delivery</h2>
+    <div class="process-grid">
+      <div>
+        <p class="process-desc">
+          We use industry-standard technologies and proven frameworks to produce high-quality software efficiently. By leveraging existing open-source and proprietary tools for generic tasks, we can focus on your specific domain problems, reducing maintenance cost and total cost of ownership over the system lifecycle.
+        </p>
+        <p class="process-desc">
+          We believe in being transparent with progress and raising potential issues as early as possible. After commissioning, a support plan can be defined to ensure the system continues to deliver value over time.
+        </p>
+      </div>
+      <div class="steps">
+        <div class="step fade-in">
+          <div class="step-num">01</div>
+          <div class="step-content">
+            <div class="step-title">Define &amp; Assess</div>
+            <p class="step-text">Needs and requirements are gathered. A pre-study may clarify scope. The outcome is a verified understanding and a solution proposal.</p>
+          </div>
+        </div>
+        <div class="step fade-in">
+          <div class="step-num">02</div>
+          <div class="step-content">
+            <div class="step-title">Plan &amp; Align</div>
+            <p class="step-text">Milestones and deliverables are defined. A feedback cadence is agreed upon before any development begins.</p>
+          </div>
+        </div>
+        <div class="step fade-in">
+          <div class="step-num">03</div>
+          <div class="step-content">
+            <div class="step-title">Develop &amp; Deliver</div>
+            <p class="step-text">Incremental development with transparent progress reporting. Potential issues raised immediately, not at the end.</p>
+          </div>
+        </div>
+        <div class="step fade-in">
+          <div class="step-num">04</div>
+          <div class="step-content">
+            <div class="step-title">Commission &amp; Support</div>
+            <p class="step-text">System goes live. An optional support plan ensures the system is maintained and continues to provide value long-term.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TECH -->
+<section id="tech">
+  <div class="section-inner">
+    <div class="section-tag">Technologies</div>
+    <h2 class="section-title fade-in">Deep expertise,<br>broad capability</h2>
+    <p class="tech-intro">Deep expertise in NI LabVIEW and NI TestStand combined with extensive experience across text-based languages and measurement technologies.</p>
+    <div class="tech-grid">
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">LabVIEW</div>
+        <div class="tech-badge-role">NI Certified LabVIEW Architect</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">TestStand</div>
+        <div class="tech-badge-role">NI Certified TestStand Developer</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">Training Services</div>
+        <div class="tech-badge-role">Customized to your needs</div>
+       <!--<div class="tech-badge-role">NI Certified Professional Instructor</div>-->
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">Python</div>
+        <div class="tech-badge-role">Scripting</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">C++</div>
+        <div class="tech-badge-role">Embedded Systems</div>
+      </div>      
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">CI/CD</div>
+        <div class="tech-badge-role">Automated Test, Build &amp; Deploy pipelines</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">Data Acquisition</div>
+        <div class="tech-badge-role">DAQmx, cDAQ, PXI &amp; USB</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">cRIO</div>
+        <div class="tech-badge-role">Real-Time<br/>FPGA</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">PXI</div>
+        <div class="tech-badge-role">Modular Instrumentation</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">Serial Communication</div>
+        <div class="tech-badge-role">RS-232/485, CAN</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">Instrument Integration</div>
+        <div class="tech-badge-role">SCPI / VISA Protocols</div>
+      </div>
+      <div class="tech-badge fade-in">
+        <div class="tech-badge-name">Git</div>
+        <div class="tech-badge-role">Version Control &amp; Collaboration</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-inner">
+    <div class="contact-grid">
+      <div>
+        <div class="section-tag">Contact</div>
+        <h2 class="section-title fade-in">Let's solve your<br>testing challenges</h2>
+        <p class="contact-desc">
+          Astemes is a solutions provider based in Pietarsaari, Finland. We bring expertise in the design and development of automated test and measurement systems. Reach out, we're happy to discuss how we can help!
+        </p>
+        <div class="contact-detail">
+          <div class="contact-item">
+            <span class="contact-item-label">Email</span>
+            <span class="contact-item-value"><a href="mailto:info@astemes.com">info@astemes.com</a></span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-item-label">Phone</span>
+            <span class="contact-item-value"><a href="tel:+358447272425">+358 44 727 2425</a></span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-item-label">Location</span>
+            <span class="contact-item-value">Pietarsaari, Finland</span>
+          </div>
+          <div class="contact-item">
+            <span class="contact-item-label">GitHub</span>
+            <span class="contact-item-value"><a href="https://github.com/astemes">github.com/astemes</a></span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="background: var(--bg); border: 1px solid var(--border); padding: 2.5rem; margin-top: 3rem;">
+          <div style="font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.5rem;">Send a message</div>
+          <form id="contact-form" style="display: flex; flex-direction: column; gap: 1rem;" onsubmit="return openMailClient()">
+            <input id="contact-name" type="text" placeholder="Your name" style="background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 1rem; padding: 1.1rem 1.25rem; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+
+            <textarea id="contact-message" placeholder="How can we help?" rows="6" style="background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 1rem; padding: 1.1rem 1.25rem; outline: none; resize: vertical; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+            <button type="submit" class="btn-primary" style="align-self: flex-start;">Send message →</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-inner">
+    <div class="section-tag">About</div>
+    <h2 class="section-title fade-in">Who we are</h2>
+    <div class="about-content">
+      <p class="about-text">
+        Astemes provides expertise in the design and development of automated test and measurement systems. Our mission is to enable innovation and excellence by providing world class technical expertise. We value software craftmanship and continuously work to improve and widen our offerings by actively participating in the international community.
+      </p>
+      <p class="about-text">
+        We value transparency and always deliver to the best of our ability. While we do want our customers to come back, we have no intention to lock anyone in. Source code and documentation is, for this reason, always provided as part of our deliveries.
+      </p>
+      <div class="about-values">
+        <div class="about-value fade-in">
+          <div class="about-value-title">Craftsmanship</div>
+          <p class="about-value-text">Quality software built on proven frameworks, know-how, and industry best practices.</p>
+        </div>
+        <div class="about-value fade-in">
+          <div class="about-value-title">Transparency</div>
+          <p class="about-value-text">Full source code and documentation delivered. No lock-in, no black boxes.</p>
+        </div>
+        <div class="about-value fade-in">
+          <div class="about-value-title">Community</div>
+          <p class="about-value-text">Active participation in the test and measurement community through open source and knowledge sharing.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="brand_assets/Logo/Logo_alphasigma_white.png" alt="Astemes">
+    <span class="footer-logo-text">Astemes</span>
+  </div>
+  <div class="footer-copy">© 2026 Astemes — Pietarsaari, Finland</div>
+</footer>
+
+<script>
+  // Contact form — opens email client with filled fields
+  function openMailClient() {
+    var name = document.getElementById('contact-name').value.trim();
+    var message = document.getElementById('contact-message').value.trim();
+
+    var subject = 'Inquiry from ' + (name || 'Website visitor');
+    var body = message + '\n\n— ' + name;
+
+    window.location.href = 'mailto:info@astemes.com'
+      + '?subject=' + encodeURIComponent(subject)
+      + '&body=' + encodeURIComponent(body);
+
+    return false;
+  }
+
+  // Scroll reveal
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
