@@ -100,6 +100,32 @@
   }
   .nav-links a:hover { color: var(--accent); }
 
+  .nav-hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+    z-index: 101;
+  }
+  .nav-hamburger span {
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--text);
+    margin: 5px 0;
+    transition: transform 0.3s, opacity 0.3s;
+  }
+  .nav-hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+  }
+  .nav-hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(5px, -5px);
+  }
+
   .nav-cta {
     font-family: 'DM Mono', monospace;
     font-size: 0.78rem;
@@ -648,9 +674,31 @@
   }
 
   /* ── RESPONSIVE ── */
-  @media (max-width: 900px) {
+  @media (max-width: 1080px) {
     nav { padding: 1.25rem 2rem; }
-    .nav-links { display: none; }
+    .nav-hamburger { display: block; }
+    .nav-cta { display: none; }
+    .nav-links {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #212121;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2.5rem;
+      z-index: 999;
+    }
+    .nav-links.open { display: flex; }
+    .nav-hamburger { z-index: 1000; }
+    .nav-links a {
+      font-size: 1rem;
+      letter-spacing: 0.12em;
+      color: var(--text);
+    }
     .hero { padding: 8rem 2rem 14rem; }
     .hero-stats { right: 2rem; bottom: 2rem; flex-direction: row; gap: 2rem; }
     .section-inner { padding: 4rem 2rem; }
@@ -682,6 +730,11 @@
     <li><a href="#about">About</a></li>
   </ul>
   <a href="#contact" class="nav-cta">Get in touch</a>
+  <button class="nav-hamburger" aria-label="Toggle menu" onclick="toggleMenu()">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
 </nav>
 
 <!-- HERO -->
@@ -977,6 +1030,22 @@
 
 <script>
   // Contact form — opens email client with filled fields
+  // Mobile menu toggle
+  function toggleMenu() {
+    var links = document.querySelector('.nav-links');
+    var btn = document.querySelector('.nav-hamburger');
+    links.classList.toggle('open');
+    btn.classList.toggle('active');
+  }
+
+  // Close menu when a link is tapped
+  document.querySelectorAll('.nav-links a').forEach(function(link) {
+    link.addEventListener('click', function() {
+      document.querySelector('.nav-links').classList.remove('open');
+      document.querySelector('.nav-hamburger').classList.remove('active');
+    });
+  });
+
   function openMailClient() {
     var name = document.getElementById('contact-name').value.trim();
     var message = document.getElementById('contact-message').value.trim();
