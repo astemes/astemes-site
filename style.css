@@ -90,6 +90,7 @@ nav {
   transition: color 0.2s;
 }
 .nav-links a:hover { color: var(--accent); }
+.nav-links .nav-lang-mobile { display: none; }
 
 .nav-hamburger {
   display: none;
@@ -749,15 +750,21 @@ footer {
   }
   .nav-links.open { display: flex; }
   .nav-links .nav-lang-mobile {
-    display: flex;
-    gap: 1rem;
+    display: flex !important;
+    gap: 1.2rem;
     list-style: none;
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
   }
-  .nav-links .nav-lang-mobile a {
+  .nav-lang-mobile a {
+    font-family: 'DM Mono', monospace;
     font-size: 0.85rem;
+    letter-spacing: 0.08em;
     color: var(--muted);
+    text-decoration: none;
   }
-  .nav-links .nav-lang-mobile a.active { color: var(--text); }
+  .nav-lang-mobile a.active { color: var(--text); border-bottom: 1px solid var(--accent); }
   .nav-hamburger { z-index: 1000; }
   .nav-links a {
     font-size: 1rem;
