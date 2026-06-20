@@ -159,10 +159,38 @@ nav {
   min-height: 100vh;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  gap: 3rem;
   padding: 8rem 4rem 4rem;
   z-index: 1;
   overflow: hidden;
 }
+
+.hero-content {
+  flex: 1 1 560px;
+  max-width: 660px;
+}
+
+.hero-visual {
+  flex: 1 1 460px;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+.hero-visual svg {
+  width: 100%;
+  max-width: 560px;
+  height: auto;
+  filter: drop-shadow(0 24px 60px rgba(0,0,0,0.45));
+}
+/* Only the Stop button is interactive; the rest of the graphic ignores the pointer. */
+.hero-visual #atsStop { pointer-events: auto; cursor: pointer; }
+.hero-visual #atsStop:hover #atsStopBox { fill: rgba(176,122,122,0.24); }
+/* Floating instrument panel fades in/out as measurements run. */
+.hero-visual #atsInst { transition: opacity 0.22s ease; }
 
 .hero-glow {
   position: absolute;
@@ -397,7 +425,15 @@ section {
   font-size: 2rem;
   margin-bottom: 1.5rem;
   line-height: 1;
+  color: var(--accent);
+  transition: color 0.3s;
 }
+.service-icon svg {
+  width: 2.4rem;
+  height: 2.4rem;
+  display: block;
+}
+.service-card:hover .service-icon { color: var(--accent2); }
 .service-title {
   font-family: 'Space Grotesk', sans-serif;
   font-weight: 600;
@@ -772,6 +808,8 @@ footer {
     color: var(--text);
   }
   .hero { padding: 8rem 2rem 14rem; }
+  .hero-visual { display: none; }
+  .hero-content { flex: 1 1 100%; max-width: none; }
   .hero-stats { right: 2rem; bottom: 2rem; flex-direction: row; gap: 2rem; }
   .section-inner { padding: 4rem 2rem; }
   .services-grid, .solutions-grid { grid-template-columns: 1fr; }
