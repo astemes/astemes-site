@@ -424,3 +424,21 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
   else boot();
 })();
+
+/* PCB background parallax — drifts the fixed circuit layer slower than the page on scroll. */
+(function () {
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var FACTOR = 0.22, ticking = false, last = null;
+  function update() {
+    ticking = false;
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var shift = -(y * FACTOR);            // negative so the traces lag (move slower, same direction)
+    if (shift !== last) {
+      last = shift;
+      document.body.style.setProperty('--pcb-shift', shift.toFixed(1) + 'px');
+    }
+  }
+  function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  update();
+})();

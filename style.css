@@ -29,18 +29,29 @@ body {
   overflow-x: hidden;
 }
 
-/* PCB trace background — fixed, covers any viewport/orientation, kept as a subtle even texture */
+/* PCB trace background — fixed layer that tiles vertically; JS drifts it slower than
+   the page on scroll (subtle parallax) via the --pcb-shift custom property. */
 body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background: url('graphics/pcb-bg.svg') center center / cover no-repeat;
+  background-image: url('graphics/pcb-bg.svg');
+  background-repeat: repeat-y;            /* seamless-ish tile, seam falls on the pin-header rows */
+  background-size: 100% auto;             /* fill width, keep aspect, stack vertically */
+  background-position: center var(--pcb-shift, 0px);
   opacity: 0.8;
   pointer-events: none;
   z-index: 0;
-  /* soft full-bleed: keep the traces visible across the field, only feather the far edges */
+  /* keep the traces visible across the field, only feather the far edges */
   -webkit-mask-image: radial-gradient(135% 135% at 50% 45%, #000 80%, transparent 100%);
           mask-image: radial-gradient(135% 135% at 50% 45%, #000 80%, transparent 100%);
+}
+@media (prefers-reduced-motion: reduce) {
+  body::after { background-position: center 0; }
+}
+/* keep the trace scale consistent on narrow screens (otherwise the tile gets dense) */
+@media (max-width: 1080px) {
+  body::after { background-size: 180% auto; }
 }
 
 /* ── NAV ── */
