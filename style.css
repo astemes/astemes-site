@@ -29,17 +29,17 @@ body {
   overflow-x: hidden;
 }
 
-/* Grid background */
-body::before {
+/* PCB trace background — fixed, covers any viewport/orientation, kept as a subtle even texture */
+body::after {
   content: '';
   position: fixed;
   inset: 0;
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 60px 60px;
+  background: url('graphics/pcb-bg.svg') center center / cover no-repeat;
   pointer-events: none;
   z-index: 0;
+  /* soft full-bleed: keep the traces visible across the field, only feather the far edges */
+  -webkit-mask-image: radial-gradient(135% 135% at 50% 45%, #000 80%, transparent 100%);
+          mask-image: radial-gradient(135% 135% at 50% 45%, #000 80%, transparent 100%);
 }
 
 /* ── NAV ── */
