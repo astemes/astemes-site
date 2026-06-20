@@ -35,6 +35,7 @@ body::after {
   position: fixed;
   inset: 0;
   background: url('graphics/pcb-bg.svg') center center / cover no-repeat;
+  opacity: 0.8;
   pointer-events: none;
   z-index: 0;
   /* soft full-bleed: keep the traces visible across the field, only feather the far edges */
