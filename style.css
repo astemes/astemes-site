@@ -188,9 +188,16 @@ nav {
   position: relative;
   z-index: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
+  pointer-events: auto;
+}
+.anim-stage {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .hero-visual svg {
   width: 100%;
@@ -203,6 +210,38 @@ nav {
 .hero-visual #atsStop:hover #atsStopBox { fill: rgba(176,122,122,0.24); }
 /* Floating instrument panel fades in/out as measurements run. */
 .hero-visual #atsInst { transition: opacity 0.22s ease; }
+
+/* Animation swap controls — prev/next float over the animation, appearing on hover.
+   (Shown only when more than one animation is registered.) */
+.anim-controls {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+.anim-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(33,33,33,0.66);
+  backdrop-filter: blur(4px);
+  border: 1px solid var(--border);
+  color: var(--accent2);
+  border-radius: 50%;
+  font-size: 1.25rem; line-height: 1;
+  cursor: pointer;
+  pointer-events: auto;
+  opacity: 0;
+  transition: opacity 0.2s ease, background 0.2s, border-color 0.2s, color 0.2s;
+}
+.anim-prev { left: 8px; }
+.anim-next { right: 8px; }
+.anim-nav:hover { background: rgba(33,33,33,0.9); border-color: var(--accent); color: #fff; }
+.hero-visual:hover .anim-nav { opacity: 1; }
+/* keep them reachable while the pointer is on a button even if briefly off the panel */
+.anim-nav:focus-visible { opacity: 1; }
 
 .hero-glow {
   position: absolute;
@@ -820,10 +859,12 @@ footer {
     letter-spacing: 0.12em;
     color: var(--text);
   }
-  .hero { padding: 8rem 2rem 14rem; }
-  .hero-visual { display: none; }
-  .hero-content { flex: 1 1 100%; max-width: none; }
-  .hero-stats { right: 2rem; bottom: 2rem; flex-direction: row; gap: 2rem; }
+  .hero { padding: 8rem 2rem 4rem; flex-direction: column; justify-content: flex-start; }
+  .hero-content { flex: 0 0 auto; max-width: none; }
+  /* show the animation on mobile, stacked under the copy; swipe to change it */
+  .hero-visual { flex: 0 0 auto; width: 100%; max-width: 560px; margin: 2.5rem auto 0; }
+  .hero-stats { display: none; }
+  .anim-nav { display: none; }   /* hover buttons not used on touch — swipe instead */
   .section-inner { padding: 4rem 2rem; }
   .services-grid, .solutions-grid { grid-template-columns: 1fr; }
   .tech-grid { grid-template-columns: repeat(2, 1fr); }
