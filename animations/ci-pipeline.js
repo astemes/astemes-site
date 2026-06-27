@@ -88,12 +88,11 @@
       </g>
     </svg>`;
 
-  function boot() {
-    var mount = document.querySelector('.hero-visual');
-    if (!mount || mount.querySelector('#ciPanel')) return;
-    mount.innerHTML = SVG;
-
-    (function () {
+  window.AstemesAnim.register({
+    id: 'ci-pipeline', name: 'CI Pipeline', weight: 1, isDefault: false,
+    mount: function (stage) {
+      stage.innerHTML = SVG;
+      var __raf = null, __torn = false;
       var panel = document.getElementById('ciPanel');
       if (!panel) return;
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -248,26 +247,30 @@
       }
       id('ciStop').addEventListener('click', abort);
 
-      var mqDesktop = window.matchMedia('(min-width: 1081px)');
+      var mqDesktop = window.matchMedia('(min-width: 1px)');
       if (reduce) { if (mqDesktop.matches) render(starts[HIL] + 2600, 0); return; }
 
       var t0 = null, lastC = 0, ticking = false;
       function frame(ts) {
-        if (stopped || !mqDesktop.matches) { ticking = false; return; }
+        if (__torn || stopped || !mqDesktop.matches) { ticking = false; return; }
         if (t0 === null) t0 = ts;
         var el = ts - t0, c = el % CYCLE;
         if (c < lastC) { history.push(fail ? 0 : 1); history.shift(); drawHistory(); var pass = history.reduce(function (a, b) { return a + b; }, 0); id('ciPass').textContent = Math.round(pass / HN * 100) + '% PASS'; newRun(); }
         lastC = c;
         render(c, el);
-        requestAnimationFrame(frame);
+        __raf = requestAnimationFrame(frame);
       }
-      function startLoop() { if (ticking || stopped || !mqDesktop.matches) return; ticking = true; t0 = null; requestAnimationFrame(frame); }
+      function startLoop() { if (ticking || stopped || !mqDesktop.matches) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
       if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', startLoop);
       else if (mqDesktop.addListener) mqDesktop.addListener(startLoop);
       startLoop();
-    })();
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+    return function teardown() {
+      __torn = true;
+      if (__raf) cancelAnimationFrame(__raf);
+      if (mqDesktop.removeEventListener) mqDesktop.removeEventListener('change', startLoop);
+      else if (mqDesktop.removeListener) mqDesktop.removeListener(startLoop);
+      stage.innerHTML = '';
+    };
+    }
+  });
 })();

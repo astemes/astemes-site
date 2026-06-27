@@ -396,7 +396,7 @@
     id('atsStop').addEventListener('click', abort);
 
     // Only animate on a full desktop browser — hidden on mobile/tablet (see CSS), and paused there too.
-    var mqDesktop = window.matchMedia('(min-width: 1081px)');
+    var mqDesktop = window.matchMedia('(min-width: 1px)');
     if (reduce) { if (mqDesktop.matches) render(TEST_END); return function () { stage.innerHTML = ''; }; }
 
     var t0 = null, unit = 917, ticking = false;

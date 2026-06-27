@@ -106,12 +106,11 @@
       </g>
     </svg>`;
 
-  function boot() {
-    var mount = document.querySelector('.hero-visual');
-    if (!mount || mount.querySelector('#mvPanel')) return;
-    mount.innerHTML = SVG;
-
-    (function () {
+  window.AstemesAnim.register({
+    id: 'vision-inspect', name: 'Vision Inspection', weight: 1, isDefault: false,
+    mount: function (stage) {
+      stage.innerHTML = SVG;
+      var __raf = null, __torn = false;
       var panel = document.getElementById('mvPanel');
       if (!panel) return;
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -242,12 +241,12 @@
       id('mvStop').addEventListener('click', abort);
       setStopBtn(true);
 
-      var mqDesktop = window.matchMedia('(min-width: 1081px)');
+      var mqDesktop = window.matchMedia('(min-width: 1px)');
       if (reduce) { if (mqDesktop.matches) render(0.6, 0); return; }
 
       var t0 = null, lastF = 0, ticking = false;
       function frameLoop(ts) {
-        if (stopped || !mqDesktop.matches) { ticking = false; return; }
+        if (__torn || stopped || !mqDesktop.matches) { ticking = false; return; }
         if (t0 === null) t0 = ts;
         var el = ts - t0, f = (el % CYCLE) / CYCLE;
         if (f < lastF) { history.push(run.fail ? 0 : 1); history.shift(); drawHist(); newPart(); }
@@ -259,9 +258,13 @@
       if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', startLoop);
       else if (mqDesktop.addListener) mqDesktop.addListener(startLoop);
       startLoop();
-    })();
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+    return function teardown() {
+      __torn = true;
+      if (__raf) cancelAnimationFrame(__raf);
+      if (mqDesktop.removeEventListener) mqDesktop.removeEventListener('change', startLoop);
+      else if (mqDesktop.removeListener) mqDesktop.removeListener(startLoop);
+      stage.innerHTML = '';
+    };
+    }
+  });
 })();

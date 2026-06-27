@@ -1,4 +1,4 @@
-/* Astemes "Gang Programmer" — animated hero instrument panel (production programming variant).
+/* Astemes "Batch Programmer" — animated hero instrument panel (production programming variant).
    Same chrome, palette and self-injection contract as the other hero animations, so all four share
    one <div class="hero-visual"> mount. A 4-up production programmer flashes firmware, loads a config
    profile and applies a customer-specific variant to four DUTs in parallel. The four nests run as a
@@ -21,7 +21,7 @@
 
   var SVG =
   `<svg id="pgPanel" viewBox="0 0 600 560" role="img"
-        aria-label="A four-up production gang programmer flashing firmware, loading configuration and applying customer-specific variants to four devices in parallel, with each nest showing live staged progress as the batch completes."
+        aria-label="A four-up production batch programmer flashing firmware, loading configuration and applying customer-specific variants to four devices in parallel, with each nest showing live staged progress as the batch completes."
         font-family="'DM Mono', ui-monospace, 'SFMono-Regular', monospace">
       <!-- panel -->
       <rect x="16" y="16" width="568" height="528" rx="18" fill="rgba(43,54,64,0.55)" stroke="#455A64" stroke-width="1.5"/>
@@ -29,7 +29,7 @@
 
       <!-- title bar -->
       <rect x="40" y="31" width="12" height="12" rx="2" fill="#607D8B"/>
-      <text x="60" y="42" fill="#CFD8DC" font-size="13" font-family="'Space Grotesk',sans-serif" font-weight="600" letter-spacing="1">GANG PROGRAMMER</text>
+      <text x="60" y="42" fill="#CFD8DC" font-size="13" font-family="'Space Grotesk',sans-serif" font-weight="600" letter-spacing="1">BATCH PROGRAMMER</text>
       <line x1="508" y1="40" x2="520" y2="40" stroke="#6b7780" stroke-width="1.5"/>
       <rect x="530" y="33" width="10" height="9" rx="1" fill="none" stroke="#6b7780" stroke-width="1.5"/>
       <path d="M551 33l10 9M561 33l-10 9" stroke="#6b7780" stroke-width="1.5"/>
@@ -41,7 +41,7 @@
       <text x="232" y="84" fill="#9E9E9E" font-size="9" letter-spacing="1.5">WORK ORDER</text>
       <text x="232" y="100" fill="#CFD8DC" font-size="13">WO-4471 &#183; mixed</text>
       <text x="560" y="84" text-anchor="end" fill="#9E9E9E" font-size="9" letter-spacing="1.5">STATION</text>
-      <text x="560" y="100" text-anchor="end" fill="#CFD8DC" font-size="13">GANG-4</text>
+      <text x="560" y="100" text-anchor="end" fill="#CFD8DC" font-size="13">BATCH-4</text>
 
       <!-- status banner -->
       <rect id="pgBanner" x="32" y="120" width="536" height="54" rx="8" fill="rgba(216,166,87,0.10)" stroke="#D8A657" stroke-width="1.5"/>
@@ -66,12 +66,11 @@
       </g>
     </svg>`;
 
-  function boot() {
-    var mount = document.querySelector('.hero-visual');
-    if (!mount || mount.querySelector('#pgPanel')) return;
-    mount.innerHTML = SVG;
-
-    (function () {
+  window.AstemesAnim.register({
+    id: 'batch-programmer', name: 'Batch Programmer', weight: 1, isDefault: false,
+    mount: function (stage) {
+      stage.innerHTML = SVG;
+      var __raf = null, __torn = false;
       var panel = document.getElementById('pgPanel');
       if (!panel) return;
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -197,26 +196,30 @@
       id('pgStop').addEventListener('click', abort);
       setStopBtn(true);
 
-      var mqDesktop = window.matchMedia('(min-width: 1081px)');
+      var mqDesktop = window.matchMedia('(min-width: 1px)');
       if (reduce) { if (mqDesktop.matches) render(PROG * 0.5, 0); return; }
 
       var t0 = null, lastC = 0, ticking = false;
       function frame(ts) {
-        if (stopped || !mqDesktop.matches) { ticking = false; return; }
+        if (__torn || stopped || !mqDesktop.matches) { ticking = false; return; }
         if (t0 === null) t0 = ts;
         var el = ts - t0, c = el % CYCLE;
         if (c < lastC) { batch++; units += 4; snBase += 4; setHeader(); }
         lastC = c;
         render(c, el);
-        requestAnimationFrame(frame);
+        __raf = requestAnimationFrame(frame);
       }
-      function startLoop() { if (ticking || stopped || !mqDesktop.matches) return; ticking = true; t0 = null; requestAnimationFrame(frame); }
+      function startLoop() { if (ticking || stopped || !mqDesktop.matches) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
       if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', startLoop);
       else if (mqDesktop.addListener) mqDesktop.addListener(startLoop);
       startLoop();
-    })();
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+    return function teardown() {
+      __torn = true;
+      if (__raf) cancelAnimationFrame(__raf);
+      if (mqDesktop.removeEventListener) mqDesktop.removeEventListener('change', startLoop);
+      else if (mqDesktop.removeListener) mqDesktop.removeListener(startLoop);
+      stage.innerHTML = '';
+    };
+    }
+  });
 })();

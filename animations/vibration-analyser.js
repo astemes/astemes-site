@@ -107,12 +107,11 @@
       <text id="vbFoot" x="40" y="492" fill="#9E9E9E" font-size="12">1&#215; = 24.8 Hz &#183; \u0394f 0.05&#215; &#183; ISO 10816 CLASS II</text>
     </svg>`;
 
-  function boot() {
-    var mount = document.querySelector('.hero-visual');
-    if (!mount || mount.querySelector('#vbPanel')) return;
-    mount.innerHTML = SVG;
-
-    (function () {
+  window.AstemesAnim.register({
+    id: 'vibration-analyser', name: 'Vibration Analyser', weight: 1, isDefault: false,
+    mount: function (stage) {
+      stage.innerHTML = SVG;
+      var __raf = null, __torn = false;
       var panel = document.getElementById('vbPanel');
       if (!panel) return;
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -245,7 +244,7 @@
         id('vbFoot').textContent = '1\u00D7 = ' + (rpm / 60).toFixed(1) + ' Hz \u00B7 \u0394f 0.05\u00D7 \u00B7 ISO 10816 CLASS II';
       }
 
-      var mqDesktop = window.matchMedia('(min-width: 1081px)');
+      var mqDesktop = window.matchMedia('(min-width: 1px)');
       if (reduce) { if (mqDesktop.matches) { for (var w = 0; w < 60; w++) render(DWELL * 1.5); } return; }
 
       var t0 = null, ticking = false;
@@ -253,15 +252,19 @@
         if (!mqDesktop.matches) { ticking = false; return; }
         if (t0 === null) t0 = ts;
         render(ts - t0);
-        requestAnimationFrame(frame);
+        __raf = requestAnimationFrame(frame);
       }
-      function startLoop() { if (ticking || !mqDesktop.matches) return; ticking = true; t0 = null; requestAnimationFrame(frame); }
+      function startLoop() { if (ticking || !mqDesktop.matches) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
       if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', startLoop);
       else if (mqDesktop.addListener) mqDesktop.addListener(startLoop);
       startLoop();
-    })();
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
-  else boot();
+    return function teardown() {
+      __torn = true;
+      if (__raf) cancelAnimationFrame(__raf);
+      if (mqDesktop.removeEventListener) mqDesktop.removeEventListener('change', startLoop);
+      else if (mqDesktop.removeListener) mqDesktop.removeListener(startLoop);
+      stage.innerHTML = '';
+    };
+    }
+  });
 })();
