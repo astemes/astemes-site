@@ -87,11 +87,9 @@
   function boot() {
     var host = document.querySelector('.hero-visual');
     if (!host || !registry.length) return;
-    // default first, then by name, so dot/control order is stable regardless of load order
-    registry.sort(function (a, b) {
-      return (b.isDefault ? 1 : 0) - (a.isDefault ? 1 : 0) ||
-             String(a.name).localeCompare(String(b.name));
-    });
+    // registry is already in manifest order (modules are loaded sequentially), so the
+    // carousel order follows animations/manifest.js. The default just decides the
+    // first-visit pick, not the order.
     host.innerHTML = '';
     stage = document.createElement('div'); stage.className = 'anim-stage';
     host.appendChild(stage);
@@ -114,16 +112,17 @@
     }, { passive: true });
   }
 
+  // Load modules one at a time, in manifest order, so the registry (and therefore the
+  // carousel order) matches animations/manifest.js exactly.
   function loadAnimations(done) {
-    var files = window.ASTEMES_ANIMATIONS || [];
-    if (!files.length) { done(); return; }
-    var left = files.length;
-    files.forEach(function (f) {
+    var files = window.ASTEMES_ANIMATIONS || [], i = 0;
+    (function next() {
+      if (i >= files.length) { done(); return; }
       var s = document.createElement('script');
-      s.src = dir + f;
-      s.onload = s.onerror = function () { if (--left === 0) done(); };
+      s.src = dir + files[i++];
+      s.onload = s.onerror = next;
       document.head.appendChild(s);
-    });
+    })();
   }
 
   function start() { loadAnimations(boot); parallax(); }
