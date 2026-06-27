@@ -4,18 +4,17 @@
    Each module must call window.AstemesAnim.register({ id, name, weight, isDefault, mount }). */
 window.ASTEMES_ANIMATIONS = [
   'test-executive.js',
-  'ate-fleet.js',
-  'battery-cycler.js',
-  'board-cal.js',
-  'ci-pipeline.js',
-  'daq-logger.js',
-  'fatigue-logger.js',
-  'batch-programmer.js',
   'hil-tester.js',
+  'battery-cycler.js',
+  'batch-programmer.js',
+  'vision-inspect.js',
+  'ci-pipeline.js',
+  'pid-control.js',
+  'daq-logger.js',
+  'ate-fleet.js',
+  'board-cal.js',
+  'fatigue-logger.js',
   'lv-cicd.js',
   'motor-testcell.js',
-  'pid-control.js',
-  'sequence-executive.js',
-  'vibration-analyser.js',
-  'vision-inspect.js'
+  'vibration-analyser.js'
 ];
