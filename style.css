@@ -215,7 +215,11 @@ nav {
    (Shown only when more than one animation is registered.) */
 .anim-controls {
   position: absolute;
-  inset: 0;
+  top: 0; bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 560px;      /* match the panel (.hero-visual svg) so buttons track it, not the column */
   pointer-events: none;
   z-index: 2;
 }
