@@ -71,11 +71,11 @@
     id: 'ate-fleet', name: 'ATE Fleet', weight: 1, isDefault: false,
     mount: function (stage) {
       stage.innerHTML = SVG;
-      var __raf = null, __torn = false;
-      var panel = document.getElementById('ftPanel');
+      var __raf = null, __torn = false, __rearmT = null;
+      var panel = stage.querySelector('svg');
       if (!panel) return;
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var id = function (s) { return document.getElementById(s); };
+      var id = function (s) { return panel.querySelector('#' + s); };
       var SVGNS = 'http://www.w3.org/2000/svg';
       function el(tag, attrs, txt) { var e = document.createElementNS(SVGNS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (txt != null) e.textContent = txt; return e; }
       var clamp = function (v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; };
@@ -125,6 +125,8 @@
       }
 
       function render(e) {
+        var uiTick = e >= uiAt;             // numeric readouts refresh at ~5 Hz
+        if (uiTick) uiAt = e + 200;
         var running = 0, idle = 0, faults = 0, maint = 0, utilSum = 0, thru = 0;
         st.forEach(function (s, i) {
           if (e - s.t0 > s.dur) transition(s, e);
@@ -183,7 +185,7 @@
           if (running) parts.push(running + ' RUNNING'); if (idle) parts.push(idle + ' IDLE'); if (maint) parts.push(maint + ' MAINT'); if (faults) parts.push(faults + ' FAULT');
           id('ftSub1').textContent = parts.join(' \u00B7 ');
         }
-        id('ftSub2').textContent = Math.round(thru) + ' units / h \u00B7 ' + Math.round(utilSum / st.length) + '% util';
+        if (uiTick) id('ftSub2').textContent = Math.round(thru) + ' units / h \u00B7 ' + Math.round(utilSum / st.length) + '% util';
         if (!faultish) id('ftDot').setAttribute('opacity', (0.5 + 0.5 * Math.abs(Math.sin(e / 240))).toFixed(2));
 
         // schedule NOW sweep
@@ -191,7 +193,7 @@
         id('ftNow').setAttribute('x1', nx.toFixed(1)); id('ftNow').setAttribute('x2', nx.toFixed(1));
         id('ftNowT').setAttribute('d', 'M' + (nx - 6).toFixed(1) + ' ' + SBY + 'l12 0l-6 6z');
         var mins = Math.floor(frac2 * 8 * 60), hh = 14 + Math.floor((24 + mins) / 60), mm = mins % 60;
-        id('ftClock').textContent = 'NOW ' + (hh % 24 < 10 ? '0' : '') + (hh % 24) + ':' + (mm < 10 ? '0' : '') + mm;
+        if (uiTick) id('ftClock').textContent = 'NOW ' + (hh % 24 < 10 ? '0' : '') + (hh % 24) + ':' + (mm < 10 ? '0' : '') + mm;
         sched.forEach(function (b) {
           var status = (b.t0 + b.dur < nowH) ? 'done' : (b.t0 <= nowH ? 'active' : 'future');
           var base = b.kind === 'maint' ? C.amber : C.blue;
@@ -200,7 +202,7 @@
           b.label.setAttribute('fill', status === 'done' ? C.dim : status === 'active' ? (b.kind === 'maint' ? C.amber : C.green) : C.mut);
         });
 
-        id('ftFoot').textContent = 'FLEET UPTIME 99.4 % \u00B7 ' + (unitsToday + (running * 3 + Math.floor(e / 1000)) % 9999).toLocaleString('en-US').replace(/,/g, '\u202F') + ' UNITS TODAY';
+        if (uiTick) id('ftFoot').textContent = 'FLEET UPTIME 99.4 % \u00B7 ' + (unitsToday + (running * 3 + Math.floor(e / 1000)) % 9999).toLocaleString('en-US').replace(/,/g, '\u202F') + ' UNITS TODAY';
       }
 
       // ── build schedule blocks (fixed plan over 0..8h) ──
@@ -223,28 +225,24 @@
       });
 
       // ── animation gate ──
-      var lastKey = '', stopped = false;
+      var lastKey = '', stopped = false, uiAt = 0;
 
-      var mqDesktop = window.matchMedia('(min-width: 1px)');
-      if (reduce) { if (mqDesktop.matches) render(4000); return; }
+      if (reduce) { render(4000); return function () { stage.innerHTML = ''; }; }
 
       var t0 = null, pauseAt = 0, ticking = false;
       function frame(ts) {
-        if (__torn || stopped || !mqDesktop.matches) { ticking = false; return; }
+        if (__torn || stopped) { ticking = false; return; }
         if (t0 === null) t0 = ts - pauseAt;
         var e = ts - t0; pauseAt = e;
         render(e);
         __raf = requestAnimationFrame(frame);
       }
-      function startLoop() { if (ticking || stopped || !mqDesktop.matches) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
-      if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', startLoop);
-      else if (mqDesktop.addListener) mqDesktop.addListener(startLoop);
+      function startLoop() { if (ticking || stopped || __torn) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
       startLoop();
     return function teardown() {
       __torn = true;
       if (__raf) cancelAnimationFrame(__raf);
-      if (mqDesktop.removeEventListener) mqDesktop.removeEventListener('change', startLoop);
-      else if (mqDesktop.removeListener) mqDesktop.removeListener(startLoop);
+      if (__rearmT) clearTimeout(__rearmT);
       stage.innerHTML = '';
     };
     }

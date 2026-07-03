@@ -70,11 +70,11 @@
     id: 'batch-programmer', name: 'Batch Programmer', weight: 1, isDefault: false,
     mount: function (stage) {
       stage.innerHTML = SVG;
-      var __raf = null, __torn = false;
-      var panel = document.getElementById('pgPanel');
+      var __raf = null, __torn = false, __rearmT = null;
+      var panel = stage.querySelector('svg');
       if (!panel) return;
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var id = function (s) { return document.getElementById(s); };
+      var id = function (s) { return panel.querySelector('#' + s); };
       var SVGNS = 'http://www.w3.org/2000/svg';
       function el(tag, attrs, txt) { var e = document.createElementNS(SVGNS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (txt != null) e.textContent = txt; return e; }
       var clamp = function (v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; };
@@ -183,9 +183,9 @@
         id('pgState').textContent = 'ABORTED'; id('pgState').setAttribute('fill', C.gmut);
         id('pgSpin').setAttribute('opacity', '0'); id('pgChkB').setAttribute('opacity', '0');
         id('pgSub1').textContent = 'HALTED BY OPERATOR';
-        setStopBtn(false); setTimeout(rearm, 2600);
+        setStopBtn(false); __rearmT = setTimeout(rearm, 2600);
       }
-      function rearm() { stopped = false; if (!mqDesktop.matches) return; t0 = null; lastC = 0; lastBn = ''; setStopBtn(true); startLoop(); }
+      function rearm() { if (__torn) return; stopped = false; t0 = null; lastC = 0; lastBn = ''; setStopBtn(true); startLoop(); }
       function setStopBtn(on) {
         var col = on ? C.red : C.queue, g = id('pgStop');
         id('pgStopBox').setAttribute('stroke', col); id('pgStopBox').setAttribute('opacity', on ? '1' : '0.5');
@@ -196,12 +196,11 @@
       id('pgStop').addEventListener('click', abort);
       setStopBtn(true);
 
-      var mqDesktop = window.matchMedia('(min-width: 1px)');
-      if (reduce) { if (mqDesktop.matches) render(PROG * 0.5, 0); return; }
+      if (reduce) { render(PROG * 0.5, 0); return function () { stage.innerHTML = ''; }; }
 
       var t0 = null, lastC = 0, ticking = false;
       function frame(ts) {
-        if (__torn || stopped || !mqDesktop.matches) { ticking = false; return; }
+        if (__torn || stopped) { ticking = false; return; }
         if (t0 === null) t0 = ts;
         var el = ts - t0, c = el % CYCLE;
         if (c < lastC) { batch++; units += 4; snBase += 4; setHeader(); }
@@ -209,15 +208,12 @@
         render(c, el);
         __raf = requestAnimationFrame(frame);
       }
-      function startLoop() { if (ticking || stopped || !mqDesktop.matches) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
-      if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', startLoop);
-      else if (mqDesktop.addListener) mqDesktop.addListener(startLoop);
+      function startLoop() { if (ticking || stopped || __torn) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
       startLoop();
     return function teardown() {
       __torn = true;
       if (__raf) cancelAnimationFrame(__raf);
-      if (mqDesktop.removeEventListener) mqDesktop.removeEventListener('change', startLoop);
-      else if (mqDesktop.removeListener) mqDesktop.removeListener(startLoop);
+      if (__rearmT) clearTimeout(__rearmT);
       stage.innerHTML = '';
     };
     }

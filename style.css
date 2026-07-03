@@ -205,12 +205,6 @@ nav {
   height: auto;
   filter: drop-shadow(0 24px 60px rgba(0,0,0,0.45));
 }
-/* Only the Stop button is interactive; the rest of the graphic ignores the pointer. */
-.hero-visual #atsStop { pointer-events: auto; cursor: pointer; }
-.hero-visual #atsStop:hover #atsStopBox { fill: rgba(176,122,122,0.24); }
-/* Floating instrument panel fades in/out as measurements run. */
-.hero-visual #atsInst { transition: opacity 0.22s ease; }
-
 /* Animation swap controls — prev/next float over the animation, appearing on hover.
    (Shown only when more than one animation is registered.) */
 .anim-controls {

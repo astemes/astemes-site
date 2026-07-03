@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!-- Local dev harness for the hero animations — NOT part of the deployed site navigation.
+     Open this file directly (file://) or serve the repo root; it loads every animation in
+     manifest.js and shows two side by side.
+     Use the dropdowns to compare any pair; Restart remounts a pane from scratch. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astemes animation harness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 24px; background: #1b242b; color: #CFD8DC; font-family: 'DM Sans', system-ui, sans-serif; }
+  h1 { font: 600 17px 'Space Grotesk', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: #CFD8DC; margin: 0 0 4px; }
+  .hint { color: #6b7780; font-size: 13px; margin: 0 0 20px; }
+  .panes { display: flex; gap: 28px; flex-wrap: wrap; align-items: flex-start; }
+  .pane { flex: 1 1 460px; max-width: 600px; }
+  .pane-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; }
+  select, button {
+    background: #263238; color: #CFD8DC; border: 1px solid #455A64; border-radius: 6px;
+    font: 500 13px 'DM Mono', monospace; padding: 6px 10px; cursor: pointer;
+  }
+  select:hover, button:hover { border-color: #607D8B; }
+  .stage { width: 100%; }
+  .stage svg { width: 100%; max-width: 560px; height: auto; display: block;
+               filter: drop-shadow(0 24px 60px rgba(0,0,0,0.45)); }
+</style>
+</head>
+<body>
+<h1>Astemes hero-animation harness</h1>
+<p class="hint">All animations from <code>manifest.js</code> (plus any work-in-progress files listed in <code>WIP</code> below). All modules scope their element lookups to their own panel, so any animation can be mounted in both panes at once.</p>
+<div class="panes">
+  <div class="pane">
+    <div class="pane-bar"><select id="sel0"></select><button id="re0" type="button">Restart</button></div>
+    <div class="stage" id="st0"></div>
+  </div>
+  <div class="pane">
+    <div class="pane-bar"><select id="sel1"></select><button id="re1" type="button">Restart</button></div>
+    <div class="stage" id="st1"></div>
+  </div>
+</div>
+
+<script>
+  // Minimal stand-in for loader.js: collect registrations, no carousel.
+  var registry = [];
+  window.AstemesAnim = { register: function (d) { if (d && typeof d.mount === 'function') registry.push(d); } };
+</script>
+<script src="manifest.js"></script>
+<script>
+  var files = (window.ASTEMES_ANIMATIONS || []).slice();
+  // to judge a work-in-progress rework side by side, add its filename here (kept out of the manifest)
+  var WIP = [];
+  WIP.forEach(function (f) { if (files.indexOf(f) < 0) files.push(f); });
+
+  // load sequentially so registry order matches the manifest (same as loader.js)
+  (function next(i) {
+    if (i >= files.length) { boot(); return; }
+    var s = document.createElement('script');
+    s.src = files[i];
+    s.onload = s.onerror = function () { next(i + 1); };
+    document.head.appendChild(s);
+  })(0);
+
+  var panes = [
+    { sel: document.getElementById('sel0'), stage: document.getElementById('st0'), re: document.getElementById('re0'), teardown: null },
+    { sel: document.getElementById('sel1'), stage: document.getElementById('st1'), re: document.getElementById('re1'), teardown: null }
+  ];
+
+  function mount(p, idx) {
+    if (p.teardown) { try { p.teardown(); } catch (e) {} p.teardown = null; }
+    p.stage.innerHTML = '';
+    try { p.teardown = registry[idx].mount(p.stage) || null; }
+    catch (e) { p.stage.innerHTML = '<p style="color:#B07A7A">mount failed: ' + e.message + '</p>'; }
+  }
+
+  function indexOfId(id) {
+    for (var i = 0; i < registry.length; i++) if (registry[i].id === id) return i;
+    return 0;
+  }
+
+  function boot() {
+    panes.forEach(function (p) {
+      registry.forEach(function (def, i) {
+        var o = document.createElement('option');
+        o.value = i; o.textContent = def.name + ' (' + def.id + ')';
+        p.sel.appendChild(o);
+      });
+      p.sel.addEventListener('change', function () { mount(p, +p.sel.value); });
+      p.re.addEventListener('click', function () { mount(p, +p.sel.value); });
+    });
+    panes[0].sel.value = indexOfId('test-executive');
+    panes[1].sel.value = indexOfId('sequence-executive');
+    mount(panes[0], +panes[0].sel.value);
+    mount(panes[1], +panes[1].sel.value);
+  }
+</script>
+</body>
+</html>
