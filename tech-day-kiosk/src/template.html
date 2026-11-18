@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astemes — Tech Day</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#212121; --surface:#2b3640; --border:#455A64; --accent:#607D8B; --accent2:#CFD8DC;
+  --text:#FFFFFF; --muted:#9E9E9E; --green:#79C5A6; --amber:#D8A657; --blue:#7EA6D6;
+  --sans:'DM Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --head:'Space Grotesk',-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;
+  --mono:'DM Mono',ui-monospace,'SF Mono',Menlo,monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg)}
+body{color:var(--text);font-family:var(--sans);font-weight:300;cursor:none;user-select:none;-webkit-user-select:none}
+
+/* PCB traces drifting slowly behind everything */
+.pcb{position:fixed;inset:-10% 0;background:url('__PCB__') repeat-y center 0/100% auto;opacity:.55;
+  animation:drift 140s linear infinite;
+  -webkit-mask-image:radial-gradient(120% 120% at 50% 45%,#000 55%,transparent 100%);
+          mask-image:radial-gradient(120% 120% at 50% 45%,#000 55%,transparent 100%)}
+@keyframes drift{from{background-position:center 0}to{background-position:center -2400px}}
+.glow{position:fixed;border-radius:50%;filter:blur(120px);pointer-events:none}
+.glow.a{width:900px;height:900px;left:-250px;top:-300px;background:rgba(96,125,139,.20)}
+.glow.b{width:800px;height:800px;right:-260px;bottom:-320px;background:rgba(121,197,166,.07)}
+
+/* fixed-width stage, scaled to the screen; height follows the screen's aspect ratio */
+#stage{position:absolute;left:0;top:0;width:1920px;transform-origin:0 0}
+
+.chrome-top{position:absolute;left:110px;right:110px;top:56px;display:flex;align-items:center;justify-content:space-between;z-index:5}
+.brand{display:flex;align-items:center;gap:16px}
+.brand img{height:40px}
+.brand span{font-family:var(--head);font-weight:700;font-size:38px;letter-spacing:.05em;text-transform:uppercase}
+.url{font-family:var(--mono);font-size:24px;color:var(--accent2);letter-spacing:.06em;opacity:.85}
+
+.chrome-bot{position:absolute;left:110px;right:110px;bottom:56px;display:flex;align-items:center;gap:28px;z-index:5}
+.bars{flex:1;display:flex;gap:10px}
+.bars i{flex:1;height:4px;border-radius:2px;background:rgba(207,216,220,.14);overflow:hidden;position:relative}
+.bars i b{position:absolute;inset:0;width:0;background:var(--accent2)}
+.bars i.done b{width:100%;background:var(--accent)}
+.slabel{font-family:var(--mono);font-size:20px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;min-width:330px;text-align:right}
+
+/* slides */
+.slide{position:absolute;left:110px;right:110px;top:150px;bottom:120px;display:flex;align-items:center;gap:90px;
+  opacity:0;transform:translateY(24px);transition:opacity .9s ease,transform .9s ease;pointer-events:none}
+.slide.on{opacity:1;transform:none}
+.slide.center{flex-direction:column;justify-content:center;gap:56px;text-align:center}
+.copy{flex:1 1 0;min-width:0}
+.visual{flex:0 0 760px;display:flex;align-items:center;justify-content:center}
+.visual svg{width:100%;max-width:820px;height:auto;filter:drop-shadow(0 30px 80px rgba(0,0,0,.5))}
+
+.kicker{font-family:var(--mono);font-size:22px;white-space:nowrap;letter-spacing:.16em;text-transform:uppercase;color:var(--accent2);margin-bottom:30px;display:flex;align-items:center;gap:18px}
+.kicker::before{content:'';width:44px;height:2px;background:var(--accent)}
+.center .kicker{justify-content:center}
+h1{font-family:var(--head);font-weight:700;font-size:124px;line-height:.98;letter-spacing:-.02em}
+h2{font-family:var(--head);font-weight:600;font-size:84px;line-height:1.04;letter-spacing:-.015em}
+h1 em,h2 em{font-style:normal;color:var(--accent2);background:linear-gradient(90deg,#CFD8DC,#79C5A6);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.lead{font-size:36px;line-height:1.5;color:#d6dde0;margin-top:40px;max-width:900px}
+.center .lead{margin-left:auto;margin-right:auto;max-width:1300px}
+ul.pts{list-style:none;margin-top:44px;display:grid;gap:22px}
+ul.pts li{font-size:32px;line-height:1.4;color:#e3e8ea;padding-left:44px;position:relative}
+ul.pts li::before{content:'';position:absolute;left:0;top:.5em;width:16px;height:16px;border:2px solid var(--green);border-radius:4px;transform:rotate(45deg) scale(.8)}
+
+/* staggered entrance for children */
+.slide .rise{opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease}
+.slide.on .rise{opacity:1;transform:none}
+.slide.on .rise:nth-child(2){transition-delay:.15s}.slide.on .rise:nth-child(3){transition-delay:.3s}
+.slide.on .rise:nth-child(4){transition-delay:.45s}.slide.on .rise:nth-child(5){transition-delay:.6s}
+.slide.on .rise:nth-child(6){transition-delay:.75s}
+
+/* cards */
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:36px;width:100%}
+.card{background:rgba(43,54,64,.62);border:1.5px solid var(--border);border-radius:22px;padding:52px 48px;text-align:left;backdrop-filter:blur(6px)}
+.card .n{font-family:var(--mono);font-size:22px;color:var(--accent);letter-spacing:.14em}
+.card h3{font-family:var(--head);font-weight:600;font-size:46px;margin:18px 0 20px}
+.card p{font-size:28px;line-height:1.5;color:#cfd6d9}
+
+/* lifecycle line */
+.life{display:flex;align-items:center;margin-top:60px;max-width:960px}
+.life .st{display:flex;flex-direction:column;align-items:center;gap:14px;font-family:var(--mono);font-size:22px;letter-spacing:.08em;color:var(--accent2);text-transform:uppercase}
+.life .st i{width:26px;height:26px;border-radius:50%;border:3px solid var(--green);background:var(--bg)}
+.life .ln{flex:1;height:3px;background:linear-gradient(90deg,var(--green),var(--accent));margin:0 10px 40px}
+
+/* process */
+.proc{display:grid;grid-template-columns:repeat(4,1fr);gap:30px;width:100%;margin-top:10px}
+.step{position:relative;background:rgba(43,54,64,.55);border:1.5px solid var(--border);border-radius:22px;padding:46px 40px;text-align:left;transition:border-color .5s,background .5s,transform .5s}
+.step.hot{border-color:var(--green);background:rgba(121,197,166,.08);transform:translateY(-8px)}
+.step .num{font-family:var(--head);font-weight:700;font-size:80px;color:rgba(207,216,220,.18);line-height:1;transition:color .5s}
+.step.hot .num{color:var(--green)}
+.step h3{font-family:var(--head);font-weight:600;font-size:40px;margin:18px 0 16px}
+.step p{font-size:26px;line-height:1.45;color:#cfd6d9}
+
+/* tech chips */
+.tech{display:grid;grid-template-columns:repeat(3,1fr);gap:34px;width:100%}
+.tg{background:rgba(43,54,64,.55);border:1.5px solid var(--border);border-radius:22px;padding:42px 44px;text-align:left}
+.tg h4{font-family:var(--mono);font-weight:400;font-size:22px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent2);margin-bottom:26px}
+.chips{display:flex;flex-wrap:wrap;gap:14px}
+.chips span{font-family:var(--mono);font-size:25px;padding:10px 20px;border-radius:10px;border:1.5px solid #3f515b;background:rgba(33,33,33,.55);color:#e7ecee}
+
+.techcol{display:grid;gap:18px;margin-top:40px}
+.techcol .tg{padding:22px 28px}
+.techcol .tg h4{font-size:18px;margin-bottom:14px}
+.techcol .chips{gap:10px}
+.techcol .chips span{font-size:21px;padding:6px 14px}
+/* badges */
+.badges{display:flex;justify-content:center;align-items:flex-end;gap:70px}
+.badge{display:flex;flex-direction:column;align-items:center;gap:26px;width:250px}
+.badge .im{height:200px;display:flex;align-items:center;justify-content:center}
+.badge img{max-height:200px;max-width:250px;filter:drop-shadow(0 12px 30px rgba(0,0,0,.45))}
+.badge span{font-family:var(--mono);font-size:22px;line-height:1.35;color:var(--accent2);text-align:center;letter-spacing:.04em}
+.badge .whitebg{background:#fff;border-radius:16px;padding:18px}
+
+/* contact */
+.contact{display:flex;align-items:center;gap:80px;margin-top:20px;justify-content:center}
+.qr{width:330px;height:330px;border-radius:22px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.qr img{width:100%;height:100%;display:block}
+.cinfo{text-align:left;display:grid;gap:26px}
+.cinfo div{font-family:var(--mono);font-size:38px;color:#eef2f3}
+.cinfo small{display:block;font-size:20px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+
+/* neutralise the website's interactive Stop buttons inside animations */
+.visual, .visual *{pointer-events:none !important}
+</style>
+</head>
+<body>
+<div class="pcb"></div><div class="glow a"></div><div class="glow b"></div>
+
+<div id="stage">
+  <div class="chrome-top">
+    <div class="brand"><img src="__LOGO__" alt=""><span>Astemes</span></div>
+    <div class="url">astemes.com</div>
+  </div>
+
+  <!-- 1 — hero -->
+  <section class="slide" data-anim="test-executive" data-dur="16" data-label="Astemes">
+    <div class="copy">
+      <div class="kicker rise">Test &amp; Measurement Solutions</div>
+      <h1 class="rise">We automate<br>your <em>testing</em>.</h1>
+      <p class="lead rise">Automated test systems that combine software and hardware — for electro-mechanical products, from early prototype to production and beyond.</p>
+    </div>
+    <div class="visual"></div>
+  </section>
+
+  <!-- 2 — who -->
+  <section class="slide" data-anim="product-lifecycle" data-dur="18" data-label="About">
+    <div class="copy">
+      <div class="kicker rise">Your partner in test automation</div>
+      <h2 class="rise">Testing across the whole <em>product life cycle</em>.</h2>
+      <div class="life rise">
+        <div class="st"><i></i>Prototype</div><div class="ln"></div>
+        <div class="st"><i></i>Development</div><div class="ln"></div>
+        <div class="st"><i></i>Production</div><div class="ln"></div>
+        <div class="st"><i></i>In the field</div>
+      </div>
+      <p class="lead rise">NI Integration Partner based in Pietarsaari, Finland. Full source code and documentation delivered — no vendor lock-in.</p>
+    </div>
+    <div class="visual"></div>
+  </section>
+
+  <!-- 3 — services -->
+  <section class="slide center" data-dur="14" data-label="Services">
+    <div>
+      <div class="kicker rise">Services</div>
+      <h2 class="rise">How we can <em>work together</em></h2>
+    </div>
+    <div class="cards">
+      <div class="card rise"><div class="n">01</div><h3>Software Development</h3><p>Industrial test and measurement software — embedded in your team or delivered independently.</p></div>
+      <div class="card rise"><div class="n">02</div><h3>Turn-Key Solutions</h3><p>Full project leadership from requirements through design and commissioning, with partners brought in as needed.</p></div>
+      <div class="card rise"><div class="n">03</div><h3>Training &amp; Workshops</h3><p>Custom training in testing, process and software engineering. Code reviews and pair programming. On-site, remote or hybrid.</p></div>
+    </div>
+  </section>
+
+  <!-- 4 — development test -->
+  <section class="slide" data-anim="vibration-analyser" data-dur="14" data-label="Development Test">
+    <div class="copy">
+      <div class="kicker rise">Solutions · Development Test</div>
+      <h2 class="rise">Let engineers <em>engineer</em>.</h2>
+      <ul class="pts">
+        <li class="rise">Configurable test systems for product development</li>
+        <li class="rise">Repetitive measurements automated and repeatable</li>
+        <li class="rise">Data you can trust, ready for analysis</li>
+      </ul>
+    </div>
+    <div class="visual"></div>
+  </section>
+
+  <!-- 5 — production test -->
+  <section class="slide" data-anim="batch-programmer" data-dur="14" data-label="Production Test">
+    <div class="copy">
+      <div class="kicker rise">Solutions · Production Test</div>
+      <h2 class="rise">Quality assurance on the <em>factory floor</em>.</h2>
+      <ul class="pts">
+        <li class="rise">Simple to operate for production staff</li>
+        <li class="rise">Programming, calibration and end-of-line test</li>
+        <li class="rise">Traceable results for every unit</li>
+      </ul>
+    </div>
+    <div class="visual"></div>
+  </section>
+
+  <!-- 6 — embedded / HIL -->
+  <section class="slide" data-anim="hil-tester" data-dur="15" data-label="Embedded Software Test">
+    <div class="copy">
+      <div class="kicker rise">Solutions · Embedded Software Test</div>
+      <h2 class="rise">Hardware-in-the-loop, <em>every commit</em>.</h2>
+      <ul class="pts">
+        <li class="rise">Real hardware, real physical signals</li>
+        <li class="rise">Fault injection to verify protections</li>
+        <li class="rise">Integrated with CI for regression testing</li>
+      </ul>
+    </div>
+    <div class="visual"></div>
+  </section>
+
+  <!-- 7 — monitoring -->
+  <section class="slide" data-anim="fatigue-logger" data-dur="14" data-label="Monitoring &amp; Life-Time">
+    <div class="copy">
+      <div class="kicker rise">Solutions · Monitoring &amp; Life-Time</div>
+      <h2 class="rise">Know before it <em>breaks</em>.</h2>
+      <ul class="pts">
+        <li class="rise">Operational data collection over long durations</li>
+        <li class="rise">Foundation for predictive maintenance</li>
+        <li class="rise">Built for uncertain, real-world environments</li>
+      </ul>
+    </div>
+    <div class="visual"></div>
+  </section>
+
+  <!-- 8 — craftsmanship / CI -->
+  <section class="slide" data-anim="lv-cicd" data-dur="16" data-label="Software Craftsmanship">
+    <div class="copy">
+      <div class="kicker rise">Software craftsmanship</div>
+      <h2 class="rise">Test software deserves <em>tests</em> too.</h2>
+      <ul class="pts">
+        <li class="rise">CI/CD pipelines that test, build and deploy automatically</li>
+        <li class="rise">Unit testing with LUnit and LMock — open-source frameworks for LabVIEW by Astemes</li>
+        <li class="rise">Git-based workflows, code reviews, clean architecture</li>
+      </ul>
+    </div>
+    <div class="visual"></div>
+  </section>
+
+  <!-- 9 — process -->
+  <section class="slide center" data-dur="14" data-label="Process" data-proc="1">
+    <div>
+      <div class="kicker rise">Process</div>
+      <h2 class="rise">Transparent from <em>day one</em></h2>
+    </div>
+    <div class="proc">
+      <div class="step rise"><div class="num">01</div><h3>Define &amp; Assess</h3><p>Requirements, optional pre-study and a solution proposal.</p></div>
+      <div class="step rise"><div class="num">02</div><h3>Plan &amp; Align</h3><p>Milestones, deliverables and a feedback cadence agreed up front.</p></div>
+      <div class="step rise"><div class="num">03</div><h3>Develop &amp; Deliver</h3><p>Incremental delivery, transparent reporting, issues raised early.</p></div>
+      <div class="step rise"><div class="num">04</div><h3>Commission &amp; Support</h3><p>Go-live on site, with an optional support plan.</p></div>
+    </div>
+  </section>
+
+  <!-- 10 — technologies -->
+  <section class="slide" data-anim="tech-stack" data-dur="16" data-label="Technologies">
+    <div class="copy">
+      <div class="kicker rise">Technologies</div>
+      <h2 class="rise">The right <em>tools</em> for the job.</h2>
+      <div class="techcol">
+        <div class="tg rise"><h4>NI ecosystem</h4><div class="chips"><span>LabVIEW</span><span>TestStand</span><span>DAQmx</span><span>cDAQ</span><span>PXI</span><span>cRIO</span><span>FPGA</span></div></div>
+        <div class="tg rise"><h4>Languages &amp; tooling</h4><div class="chips"><span>Python</span><span>C++</span><span>Git</span><span>CI/CD</span><span>LUnit</span><span>LMock</span></div></div>
+        <div class="tg rise"><h4>Interfaces</h4><div class="chips"><span>RS-232/485</span><span>CAN</span><span>USB</span><span>SCPI</span><span>VISA</span></div></div>
+      </div>
+    </div>
+    <div class="visual"></div>
+  </section>
+
+  <!-- 11 — credentials -->
+  <section class="slide center" data-dur="11" data-label="Credentials">
+    <div>
+      <div class="kicker rise">Credentials</div>
+      <h2 class="rise">World-class <em>technical expertise</em></h2>
+    </div>
+    <div class="badges rise">
+      <div class="badge"><div class="im"><img class="whitebg" src="__B_NIP__" alt=""></div><span>NI Integration<br>Partner</span></div>
+      <div class="badge"><div class="im"><img src="__B_CLA__" alt=""></div><span>Certified LabVIEW<br>Architect</span></div>
+      <div class="badge"><div class="im"><img src="__B_CTD__" alt=""></div><span>Certified TestStand<br>Developer</span></div>
+      <div class="badge"><div class="im"><img src="__B_CHAMP__" alt=""></div><span>LabVIEW<br>Champion</span></div>
+      <div class="badge"><div class="im"><img src="__B_INST__" alt=""></div><span>NI Certified<br>Instructor</span></div>
+    </div>
+  </section>
+
+  <!-- 12 — contact -->
+  <section class="slide center" data-dur="15" data-label="Contact">
+    <div>
+      <div class="kicker rise">Let's talk</div>
+      <h2 class="rise">What should <em>we automate</em> for you?</h2>
+    </div>
+    <div class="contact rise">
+      <div class="qr"><img src="__QR__" alt=""></div>
+      <div class="cinfo">
+        <div><small>Web</small>astemes.com</div>
+        <div><small>Email</small>info@astemes.com</div>
+        <div><small>Phone</small>+358 44 727 2425</div>
+        <div><small>Location</small>Pietarsaari, Finland</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="chrome-bot"><div class="bars" id="bars"></div><div class="slabel" id="slabel"></div></div>
+</div>
+
+<script>
+/* registry the site animations register into (same contract as animations/loader.js) */
+window.AstemesAnim = { _r: {}, register: function (d) { if (d && d.id && typeof d.mount === 'function') this._r[d.id] = d; } };
+</script>
+__ANIMS__
+<script>
+(function () {
+  var W = 1920, stage = document.getElementById('stage');
+  function fit() {
+    var s = window.innerWidth / W;
+    var h = Math.max(1080, Math.min(1260, window.innerHeight / s));   // follow 16:9 … 16:10
+    s = Math.min(s, window.innerHeight / h);
+    stage.style.height = h + 'px';
+    stage.style.transform = 'translate(' + ((window.innerWidth - W * s) / 2) + 'px,' + ((window.innerHeight - h * s) / 2) + 'px) scale(' + s + ')';
+  }
+  window.addEventListener('resize', fit); fit();
+
+  var slides = [].slice.call(document.querySelectorAll('.slide'));
+  var bars = document.getElementById('bars'), label = document.getElementById('slabel');
+  slides.forEach(function () { var i = document.createElement('i'); i.appendChild(document.createElement('b')); bars.appendChild(i); });
+  var barEls = [].slice.call(bars.children);
+
+  var cur = -1, teardown = null, t0 = 0, dur = 0, paused = false, resumeT = null, procT = null;
+
+  function show(n) {
+    n = (n + slides.length) % slides.length;
+    if (teardown) { try { teardown(); } catch (e) {} teardown = null; }
+    if (cur >= 0) {
+      var old = slides[cur]; old.classList.remove('on');
+      var ov = old.querySelector('.visual');
+      if (ov) setTimeout(function () { if (!old.classList.contains('on')) ov.innerHTML = ''; }, 950);
+    }
+    clearInterval(procT);
+    cur = n;
+    var s = slides[n];
+    var a = s.getAttribute('data-anim'), v = s.querySelector('.visual');
+    if (a && v && AstemesAnim._r[a]) {
+      v.innerHTML = '';
+      var host = document.createElement('div'); host.style.width = '100%'; v.appendChild(host);
+      try { teardown = AstemesAnim._r[a].mount(host) || null; } catch (e) { teardown = null; }
+    }
+    if (s.hasAttribute('data-proc')) {            // walk through the process steps
+      var steps = s.querySelectorAll('.step'), k = 0;
+      steps.forEach(function (x) { x.classList.remove('hot'); });
+      procT = setInterval(function () {
+        steps.forEach(function (x, j) { x.classList.toggle('hot', j === k % steps.length); }); k++;
+      }, 2600);
+    }
+    // force reflow so the entrance animation replays every loop
+    void s.offsetWidth; s.classList.add('on');
+    label.innerHTML = s.getAttribute('data-label') + ' &nbsp;·&nbsp; ' + (n + 1) + ' / ' + slides.length;
+    barEls.forEach(function (b, j) { b.classList.toggle('done', j < n); b.firstChild.style.width = j < n ? '100%' : '0'; });
+    dur = (+s.getAttribute('data-dur') || 12) * 1000; t0 = performance.now();
+  }
+
+  function tick(now) {
+    if (!paused) {
+      var p = Math.min(1, (now - t0) / dur);
+      barEls[cur].firstChild.style.width = (p * 100).toFixed(2) + '%';
+      if (p >= 1) show(cur + 1);
+    } else { t0 = now - dur * parseFloat(barEls[cur].firstChild.style.width || 0) / 100; }
+    requestAnimationFrame(tick);
+  }
+
+  // manual control: ← → step, space pauses; auto-play resumes after 30 s of no input
+  window.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') show(cur + 1);
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(cur - 1);
+    else if (e.key === ' ') paused = !paused;
+    else return;
+    e.preventDefault();
+    clearTimeout(resumeT); resumeT = setTimeout(function () { paused = false; }, 30000);
+  });
+  window.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+  // keep the display awake while the page is showing
+  var lock = null;
+  function wake() { try { if (navigator.wakeLock && document.visibilityState === 'visible') navigator.wakeLock.request('screen').then(function (l) { lock = l; }).catch(function () {}); } catch (e) {} }
+  document.addEventListener('visibilitychange', wake); wake();
+
+  // safety net for a full day of looping: reload once every ~3 h, at the start of the loop
+  var bootAt = Date.now();
+  var _show = show; show = function (n) { if (n === slides.length && Date.now() - bootAt > 3 * 3600e3) { location.reload(); return; } _show(n); };
+
+  show(0); requestAnimationFrame(tick);
+})();
+</script>
+</body>
+</html>
