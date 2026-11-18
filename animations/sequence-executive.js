@@ -87,11 +87,11 @@
     id: 'sequence-executive', name: 'Sequence Executive', weight: 1, isDefault: false,
     mount: function (stage) {
       stage.innerHTML = SVG;
-      var __raf = null, __torn = false;
-      var panel = document.getElementById('seqPanel');
+      var __raf = null, __torn = false, __rearmT = null;
+      var panel = stage.querySelector('svg');
       if (!panel) return;
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var id = function (s) { return document.getElementById(s); };
+      var id = function (s) { return panel.querySelector('#' + s); };
       var SVGNS = 'http://www.w3.org/2000/svg';
       function el(tag, attrs, txt) { var e = document.createElementNS(SVGNS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (txt != null) e.textContent = txt; return e; }
       var clamp = function (v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; };
@@ -244,9 +244,9 @@
         id('seqState').textContent = 'ABORTED'; id('seqState').setAttribute('fill', C.gmut);
         id('seqSpin').setAttribute('opacity', '0'); id('seqChk').setAttribute('opacity', '0'); id('seqX').setAttribute('opacity', '0');
         id('seqSub1').textContent = 'HALTED BY OPERATOR';
-        setStopBtn(false); setTimeout(rearm, 2400);
+        setStopBtn(false); __rearmT = setTimeout(rearm, 2400);
       }
-      function rearm() { stopped = false; if (!mqDesktop.matches) return; newRun(); t0 = null; lastC = 0; lastKey = ''; startLoop(); }
+      function rearm() { if (__torn) return; stopped = false; newRun(); t0 = null; lastC = 0; lastKey = ''; startLoop(); }
       function setStopBtn(on) {
         var col = on ? C.red : C.queue, g = id('seqStop');
         id('seqStopBox').setAttribute('stroke', col); id('seqStopBox').setAttribute('opacity', on ? '1' : '0.5');
@@ -257,12 +257,11 @@
       id('seqStop').addEventListener('click', abort);
       setStopBtn(true);
 
-      var mqDesktop = window.matchMedia('(min-width: 1px)');
-      if (reduce) { if (mqDesktop.matches) render(run.seq[6].start + 150, 0); return; }
+      if (reduce) { render(run.seq[6].start + 150, 0); return function () { stage.innerHTML = ''; }; }
 
       var t0 = null, lastC = 0, ticking = false;
       function frame(ts) {
-        if (__torn || stopped || !mqDesktop.matches) { ticking = false; return; }
+        if (__torn || stopped) { ticking = false; return; }
         if (t0 === null) t0 = ts;
         var el = ts - t0, c = el % run.CYCLE;
         if (c < lastC) newRun();
@@ -270,15 +269,12 @@
         render(c, el);
         __raf = requestAnimationFrame(frame);
       }
-      function startLoop() { if (ticking || stopped || !mqDesktop.matches) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
-      if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', startLoop);
-      else if (mqDesktop.addListener) mqDesktop.addListener(startLoop);
+      function startLoop() { if (ticking || stopped || __torn) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
       startLoop();
     return function teardown() {
       __torn = true;
       if (__raf) cancelAnimationFrame(__raf);
-      if (mqDesktop.removeEventListener) mqDesktop.removeEventListener('change', startLoop);
-      else if (mqDesktop.removeListener) mqDesktop.removeListener(startLoop);
+      if (__rearmT) clearTimeout(__rearmT);
       stage.innerHTML = '';
     };
     }

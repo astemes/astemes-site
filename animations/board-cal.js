@@ -110,11 +110,11 @@
     id: 'board-cal', name: 'Board Calibration', weight: 1, isDefault: false,
     mount: function (stage) {
       stage.innerHTML = SVG;
-      var __raf = null, __torn = false;
-      var panel = document.getElementById('cbPanel');
+      var __raf = null, __torn = false, __rearmT = null;
+      var panel = stage.querySelector('svg');
       if (!panel) return;
       var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var id = function (s) { return document.getElementById(s); };
+      var id = function (s) { return panel.querySelector('#' + s); };
       var SVGNS = 'http://www.w3.org/2000/svg';
       function el(tag, attrs) { var e = document.createElementNS(SVGNS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); return e; }
       var clamp = function (v, lo, hi) { return v < lo ? lo : v > hi ? hi : v; };
@@ -253,26 +253,22 @@
         if (phase !== 'pass') id('cbSpin').setAttribute('transform', 'rotate(' + ((e * 0.4) % 360).toFixed(1) + ' 54 147)');
       }
 
-      var mqDesktop = window.matchMedia('(min-width: 1px)');
-      if (reduce) { if (mqDesktop.matches) { buildChannel(0); render(T_SWEEP + T_FIT + T_CORR + 300, 0); } return; }
+      if (reduce) { buildChannel(0); render(T_SWEEP + T_FIT + T_CORR + 300, 0); return function () { stage.innerHTML = ''; }; }
 
       var t0 = null, ticking = false;
       function frame(ts) {
-        if (!mqDesktop.matches) { ticking = false; return; }
+        if (__torn) { ticking = false; return; }
         if (t0 === null) t0 = ts;
         var e = ts - t0, c = e % (CHDUR * NCH + HOLD);
         render(c, e);
         __raf = requestAnimationFrame(frame);
       }
-      function startLoop() { if (ticking || !mqDesktop.matches) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
-      if (mqDesktop.addEventListener) mqDesktop.addEventListener('change', startLoop);
-      else if (mqDesktop.addListener) mqDesktop.addListener(startLoop);
+      function startLoop() { if (ticking || __torn) return; ticking = true; t0 = null; __raf = requestAnimationFrame(frame); }
       startLoop();
     return function teardown() {
       __torn = true;
       if (__raf) cancelAnimationFrame(__raf);
-      if (mqDesktop.removeEventListener) mqDesktop.removeEventListener('change', startLoop);
-      else if (mqDesktop.removeListener) mqDesktop.removeListener(startLoop);
+      if (__rearmT) clearTimeout(__rearmT);
       stage.innerHTML = '';
     };
     }

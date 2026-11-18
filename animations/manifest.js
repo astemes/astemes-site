@@ -4,6 +4,7 @@
    Each module must call window.AstemesAnim.register({ id, name, weight, isDefault, mount }). */
 window.ASTEMES_ANIMATIONS = [
   'test-executive.js',
+  'sequence-executive.js',
   'hil-tester.js',
   'battery-cycler.js',
   'batch-programmer.js',
